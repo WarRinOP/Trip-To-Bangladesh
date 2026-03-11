@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ParallaxHero } from "@/components/ui/ParallaxHero";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { MeetYourCEOHeading } from "@/components/ui/MeetYourCEOHeading";
 
 export default function AboutPage() {
     return (
@@ -78,9 +79,28 @@ export default function AboutPage() {
             <section className="py-24 bg-background-primary">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                     <ScrollReveal>
-                        <div className="text-center mb-16">
-                            <h2 className="font-serif text-4xl text-accent-gold mb-6">A New Era</h2>
-                            <div className="w-24 h-1 bg-accent-gold/30 mx-auto mb-10" />
+                        <div className="text-center mb-16 relative">
+                            {/* Subtle radial glow behind the heading */}
+                            <div className="absolute inset-0 -z-10 flex items-center justify-center pointer-events-none">
+                                <div className="w-[600px] h-[200px] bg-accent-gold/10 blur-[80px] rounded-full" />
+                            </div>
+
+                            {/* "A New Era" — Cormorant Garamond, restrained gold */}
+                            <p className="font-serif text-lg md:text-xl text-accent-gold/70 tracking-[0.35em] uppercase mb-3">
+                                A New Era
+                            </p>
+
+                            {/* Thin gold divider */}
+                            <div className="flex items-center justify-center gap-4 mb-5">
+                                <div className="h-px w-16 bg-gradient-to-r from-transparent to-accent-gold/50" />
+                                <div className="w-1 h-1 rounded-full bg-accent-gold/60" />
+                                <div className="h-px w-16 bg-gradient-to-l from-transparent to-accent-gold/50" />
+                            </div>
+
+                            {/* "Meet Your CEO" — large cinematic serif with word-by-word animation */}
+                            <MeetYourCEOHeading />
+
+                            <div className="w-24 h-px bg-accent-gold/30 mx-auto mt-10" />
                         </div>
 
                         <div className="bg-background-secondary p-12 rounded-lg border border-accent-gold/20 relative">
