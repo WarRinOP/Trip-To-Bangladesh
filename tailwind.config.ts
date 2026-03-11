@@ -11,10 +11,10 @@ const config: Config = {
         background: {
           DEFAULT: "#0a0f1a",
           primary: "#0a0f1a",
-          secondary: "#1a2e1a",
+          secondary: "#121b2d",
         },
         primary: "#0a0f1a",
-        secondary: "#1a2e1a",
+        secondary: "#121b2d",
         accent: {
           gold: "#c9a84c",
         },
