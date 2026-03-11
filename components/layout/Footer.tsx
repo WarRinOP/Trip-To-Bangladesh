@@ -64,8 +64,8 @@ export function Footer() {
                             Chat on WhatsApp
                         </a>
                         <div className="pt-2">
-                            <a href="mailto:contact@trip2bangladesh.com" className="text-text-muted hover:text-accent-gold transition-colors text-sm focus:outline-none focus:text-accent-gold block">
-                                contact@trip2bangladesh.com
+                            <a href="mailto:mahmud.bangladesh@gmail.com" className="text-text-muted hover:text-accent-gold transition-colors text-sm focus:outline-none focus:text-accent-gold block">
+                                mahmud.bangladesh@gmail.com
                             </a>
                         </div>
                     </div>
