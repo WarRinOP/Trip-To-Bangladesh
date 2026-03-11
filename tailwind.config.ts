@@ -9,11 +9,11 @@ const config: Config = {
     extend: {
       colors: {
         background: {
-          DEFAULT: "#0f1a0f",
-          primary: "#0f1a0f",
+          DEFAULT: "#0a0f1a",
+          primary: "#0a0f1a",
           secondary: "#1a2e1a",
         },
-        primary: "#0f1a0f",
+        primary: "#0a0f1a",
         secondary: "#1a2e1a",
         accent: {
           gold: "#c9a84c",

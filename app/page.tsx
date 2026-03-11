@@ -5,6 +5,10 @@ import { Button } from "@/components/ui/Button";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { Card } from "@/components/ui/Card";
 import { Award, Globe2, Star, ChevronDown, MapPin } from "lucide-react";
+import { AnimatedHeading } from "@/components/ui/AnimatedHeading";
+import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
+import { TiltCard } from "@/components/ui/TiltCard";
+import { FadeIn } from "@/components/ui/FadeIn";
 
 export default function HomePage() {
   return (
@@ -16,24 +20,30 @@ export default function HomePage() {
         overlayOpacity={0.6}
       >
         <div className="text-center px-4 max-w-4xl mx-auto mt-20">
-          <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl text-accent-gold mb-6 tracking-tight drop-shadow-lg">
-            Bangladesh. Discovered Properly.
-          </h1>
-          <p className="text-lg md:text-2xl text-text-muted mb-10 max-w-2xl mx-auto drop-shadow-md">
-            Expert-guided journeys through one of Asia&apos;s last great frontiers.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/contact" className="w-full sm:w-auto">
-              <Button variant="primary" className="w-full text-lg">
-                Plan Your Journey
-              </Button>
-            </Link>
-            <Link href="/about" className="w-full sm:w-auto">
-              <Button variant="outline" className="w-full text-lg">
-                Our Story
-              </Button>
-            </Link>
-          </div>
+          <AnimatedHeading
+            text="Bangladesh. Discovered Properly."
+            className="font-serif text-5xl md:text-7xl lg:text-8xl text-accent-gold mb-6 tracking-tight drop-shadow-lg"
+            as="h1"
+          />
+          <FadeIn delay={0.8}>
+            <p className="text-lg md:text-2xl text-text-muted mb-10 max-w-2xl mx-auto drop-shadow-md">
+              Expert-guided journeys through one of Asia&apos;s last great frontiers.
+            </p>
+          </FadeIn>
+          <FadeIn delay={1.2}>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link href="/contact" className="w-full sm:w-auto">
+                <Button variant="primary" className="w-full text-lg">
+                  Plan Your Journey
+                </Button>
+              </Link>
+              <Link href="/about" className="w-full sm:w-auto">
+                <Button variant="outline" className="w-full text-lg">
+                  Our Story
+                </Button>
+              </Link>
+            </div>
+          </FadeIn>
         </div>
 
         {/* Animated scroll indicator arrow */}
@@ -54,12 +64,16 @@ export default function HomePage() {
               </div>
               <div className="flex flex-col items-center pt-8 md:pt-0">
                 <Globe2 className="w-10 h-10 text-accent-gold mb-4" />
-                <h3 className="text-text-primary font-medium tracking-wide">Travelers from 40+ Countries</h3>
+                <h3 className="text-text-primary font-medium tracking-wide">
+                  Travelers from <AnimatedCounter to={40} suffix="+" className="inline-block" /> Countries
+                </h3>
                 <p className="text-text-muted text-sm mt-2">Global trust & reputation</p>
               </div>
               <div className="flex flex-col items-center pt-8 md:pt-0">
                 <Star className="w-10 h-10 text-accent-gold mb-4" />
-                <h3 className="text-text-primary font-medium tracking-wide">Over 20 Years Experience</h3>
+                <h3 className="text-text-primary font-medium tracking-wide">
+                  Over <AnimatedCounter to={20} suffix="+" className="inline-block" /> Years Experience
+                </h3>
                 <p className="text-text-muted text-sm mt-2">Established in 2000</p>
               </div>
             </div>
@@ -129,29 +143,31 @@ export default function HomePage() {
                 { name: "Coastal Bangladesh", desc: "Hidden gems along the coastline.", img: "https://images.unsplash.com/photo-1606820854416-439b3305ff39?q=80&w=1200&auto=format&fit=crop", slug: "coastal-bangladesh" }
               ].map((dest) => (
                 <Link key={dest.name} href={`/destinations/${dest.slug}`} className="block group">
-                  <Card className="h-96 relative group-hover:border-accent-gold/50">
-                    <Image
-                      src={dest.img}
-                      alt={dest.name}
-                      fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0f1a0f] via-[#0f1a0f]/40 to-transparent opacity-90" />
+                  <TiltCard>
+                    <Card className="h-96 relative group-hover:border-accent-gold/50">
+                      <Image
+                        src={dest.img}
+                        alt={dest.name}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1a] via-[#0a0f1a]/40 to-transparent opacity-90" />
 
-                    <div className="absolute inset-0 p-8 flex flex-col justify-end">
-                      <h3 className="font-serif text-3xl text-text-primary mb-2 flex items-center">
-                        <MapPin className="w-5 h-5 mr-2 text-accent-gold" />
-                        {dest.name}
-                      </h3>
-                      <p className="text-text-muted mb-4">{dest.desc}</p>
+                      <div className="absolute inset-0 p-8 flex flex-col justify-end">
+                        <h3 className="font-serif text-3xl text-text-primary mb-2 flex items-center">
+                          <MapPin className="w-5 h-5 mr-2 text-accent-gold" />
+                          {dest.name}
+                        </h3>
+                        <p className="text-text-muted mb-4">{dest.desc}</p>
 
-                      <div className="overflow-hidden h-0 group-hover:h-12 transition-all duration-300 ease-in-out">
-                        <Button variant="outline" className="w-full py-2 text-sm">
-                          Explore
-                        </Button>
+                        <div className="overflow-hidden h-0 group-hover:h-12 transition-all duration-300 ease-in-out">
+                          <Button variant="outline" className="w-full py-2 text-sm">
+                            Explore
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                  </Card>
+                    </Card>
+                  </TiltCard>
                 </Link>
               ))}
             </div>
