@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
 import { PageTransition } from "@/components/layout/PageTransition";
-import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
+import { PublicShell } from "@/components/layout/PublicShell";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -30,14 +28,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${cormorant.variable} ${inter.variable} font-sans antialiased flex flex-col min-h-screen`}>
-        <Header />
-        <main className="flex-grow">
+        <PublicShell>
           <PageTransition>
             {children}
           </PageTransition>
-        </main>
-        <Footer />
-        <WhatsAppButton />
+        </PublicShell>
       </body>
     </html>
   );

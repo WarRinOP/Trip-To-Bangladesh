@@ -7,7 +7,7 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Verify Supabase Auth session server-side
+  // Server-side auth guard
   const supabase = createServerClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -16,12 +16,24 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-background-primary">
+    // Full-screen container — no global Header/Footer here
+    <div className="flex min-h-screen bg-background-primary">
+      {/* Fixed sidebar — w-64 on desktop, off-canvas on mobile */}
       <Sidebar userEmail={user.email} />
-      <div className="lg:pl-64">
-        <div className="p-6 md:p-10">
+
+      {/* Main content — pushed right by sidebar width on desktop */}
+      <div className="flex flex-col flex-1 min-w-0 lg:ml-64">
+        {/* Top bar */}
+        <header className="sticky top-0 z-30 bg-background-primary border-b border-accent-gold/10 px-6 py-4 flex items-center gap-4">
+          {/* Spacer for mobile hamburger (rendered by Sidebar) */}
+          <div className="lg:hidden w-10 h-10 shrink-0" />
+          <p className="font-serif text-accent-gold text-lg">Trip to Bangladesh — Admin</p>
+        </header>
+
+        {/* Page content */}
+        <main className="flex-1 overflow-y-auto p-6 md:p-10">
           {children}
-        </div>
+        </main>
       </div>
     </div>
   );
