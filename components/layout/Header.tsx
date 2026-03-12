@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Sparkles } from 'lucide-react';
 
 const LINKS = [
     { label: 'Home', href: '/' },
@@ -71,6 +71,20 @@ export function Header() {
                                 );
                             })}
 
+                            {/* AI Planner button */}
+                            <Link
+                                href="/itinerary-generator"
+                                className={`relative inline-flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium rounded-full border transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent-gold/50 ${
+                                    pathname === '/itinerary-generator'
+                                        ? 'bg-accent-gold/20 border-accent-gold text-accent-gold shadow-[0_0_14px_rgba(201,168,76,0.35)]'
+                                        : 'border-accent-gold/40 text-accent-gold/80 hover:border-accent-gold hover:text-accent-gold hover:shadow-[0_0_14px_rgba(201,168,76,0.25)] hover:bg-accent-gold/10'
+                                }`}
+                                aria-label="AI Itinerary Planner"
+                            >
+                                <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
+                                AI Planner
+                            </Link>
+
                             <Link
                                 href="/contact"
                                 className="relative inline-flex items-center justify-center px-6 py-2 border border-accent-gold text-sm font-medium text-accent-gold overflow-hidden group focus:outline-none focus:ring-2 focus:ring-accent-gold focus:ring-offset-2 focus:ring-offset-background-primary"
@@ -121,7 +135,16 @@ export function Header() {
                                     {link.label}
                                 </Link>
                             ))}
-                            <div className="pt-6">
+                            <div className="pt-4 flex flex-col gap-3 w-full">
+                                {/* AI Planner — mobile */}
+                                <Link
+                                    href="/itinerary-generator"
+                                    className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-accent-gold/50 text-accent-gold/90 font-medium hover:border-accent-gold hover:text-accent-gold hover:bg-accent-gold/10 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent-gold/50"
+                                >
+                                    <Sparkles className="w-4 h-4" aria-hidden="true" />
+                                    AI Planner
+                                </Link>
+
                                 <Link
                                     href="/contact"
                                     className="w-full relative flex items-center justify-center px-6 py-3 border border-accent-gold text-lg font-serif text-accent-gold group overflow-hidden focus:outline-none focus:ring-2 focus:ring-accent-gold"
