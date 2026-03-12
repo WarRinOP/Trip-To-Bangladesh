@@ -76,9 +76,19 @@ export function Footer() {
                     <p className="text-text-muted text-xs">
                         © {new Date().getFullYear()} Trip to Bangladesh. All rights reserved.
                     </p>
-                    <div className="mt-4 md:mt-0 space-x-4">
+                    <div className="mt-4 md:mt-0 flex items-center space-x-4">
                         <Link href="/privacy" className="text-text-muted hover:text-accent-gold transition-colors text-xs focus:outline-none focus:underline">Privacy Policy</Link>
                         <Link href="/terms" className="text-text-muted hover:text-accent-gold transition-colors text-xs focus:outline-none focus:underline">Terms of Service</Link>
+                        <Link
+                            href="/login"
+                            className="text-text-muted/40 hover:text-accent-gold/70 transition-colors text-xs focus:outline-none focus:underline flex items-center gap-1"
+                            aria-label="Admin Login"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                            </svg>
+                            Admin
+                        </Link>
                     </div>
                 </div>
             </div>
