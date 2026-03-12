@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { useSearchParams } from 'next/navigation';
 import { loginAction } from './actions';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Loader2, CheckCircle, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { Suspense } from 'react';
 
 const loginSchema = z.object({
@@ -20,6 +20,7 @@ type FormDataType = z.infer<typeof loginSchema>;
 // Inner component that uses useSearchParams (must be inside Suspense)
 function LoginForm() {
     const [serverError, setServerError] = useState<string | null>(null);
+    const [showPassword, setShowPassword] = useState(false);
     const searchParams = useSearchParams();
 
     const urlError = searchParams.get('error');
@@ -114,12 +115,23 @@ function LoginForm() {
 
                         <div>
                             <label className="block text-text-muted mb-1.5 text-sm">Password</label>
-                            <input
-                                {...register('password')}
-                                type="password"
-                                autoComplete="current-password"
-                                className="w-full bg-background-primary border border-gray-700 px-4 py-3 text-text-primary focus:outline-none focus:border-accent-gold transition-colors text-sm"
-                            />
+                            <div className="relative">
+                                <input
+                                    {...register('password')}
+                                    type={showPassword ? 'text' : 'password'}
+                                    autoComplete="current-password"
+                                    className="w-full bg-background-primary border border-gray-700 px-4 py-3 pr-11 text-text-primary focus:outline-none focus:border-accent-gold transition-colors text-sm"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    tabIndex={-1}
+                                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-accent-gold transition-colors"
+                                >
+                                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                </button>
+                            </div>
                             {errors.password && (
                                 <p className="text-red-400 text-xs mt-1.5">{errors.password.message}</p>
                             )}
