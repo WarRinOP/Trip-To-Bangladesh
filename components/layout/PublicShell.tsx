@@ -6,7 +6,7 @@ import { Footer } from '@/components/layout/Footer';
 import { WhatsAppButton } from '@/components/ui/WhatsAppButton';
 
 // Routes where the public shell (Header/Footer/WhatsApp) should NOT render
-const SHELL_EXCLUDED_PREFIXES = ['/admin', '/login'];
+const SHELL_EXCLUDED_PREFIXES = ['/admin', '/login', '/auth'];
 
 export function PublicShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
