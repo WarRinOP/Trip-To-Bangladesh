@@ -1,10 +1,10 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState, useCallback } from 'react';
 import { Destination } from '@/lib/destinations';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { X, Clock, MapPin, Sparkles, ExternalLink, ArrowLeft } from 'lucide-react';
+import { X, Clock, MapPin, Sparkles, ExternalLink, ArrowLeft, ChevronDown } from 'lucide-react';
 
 interface WeatherData {
   temp: number;
@@ -21,33 +21,52 @@ interface DestinationPanelProps {
 
 export function DestinationPanel({ destination, weather, onClose, onBack }: DestinationPanelProps) {
   const panelRef = useRef<HTMLDivElement>(null);
+  // Track whether user has scrolled panel — to fade out the "scroll for more" hint
+  const [hasScrolled, setHasScrolled] = useState(false);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Escape') onClose();
   };
 
+  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+    if (e.currentTarget.scrollTop > 20) {
+      setHasScrolled(true);
+    }
+  }, []);
+
+  // Reset scroll hint whenever destination changes
+  const handlePanelRef = useCallback((node: HTMLDivElement | null) => {
+    (panelRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+    if (node) {
+      node.scrollTop = 0;
+      setHasScrolled(false);
+    }
+  }, []);
+
   return (
     <AnimatePresence>
       {destination && (
         <>
-          {/* Mobile overlay backdrop */}
+          {/* Mobile overlay backdrop — only behind panel area (not full screen, since polaroids need to be visible) */}
           <motion.div
             key="backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/40 z-[1000] lg:hidden"
+            className="fixed bottom-0 left-0 right-0 z-[1000] lg:hidden"
+            style={{ height: '42vh' }}
             onClick={onClose}
           />
 
-          {/* Panel — desktop: right sidebar | mobile: bottom sheet */}
+          {/* Panel — desktop: right sidebar | mobile: bottom sheet at 42vh */}
           <motion.div
             key="panel"
-            ref={panelRef}
+            ref={handlePanelRef}
             role="dialog"
             aria-modal="true"
             aria-label={`${destination.name} tour details`}
             onKeyDown={handleKeyDown}
+            onScroll={handleScroll}
             tabIndex={-1}
             initial={{ x: '100%', opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
@@ -55,16 +74,18 @@ export function DestinationPanel({ destination, weather, onClose, onBack }: Dest
             transition={{ type: 'spring', damping: 28, stiffness: 300 }}
             className={[
               'fixed z-[1001]',
-              'lg:right-0 lg:top-0 lg:h-full lg:w-[420px] lg:bottom-auto',
+              // ── Desktop: right sidebar (unchanged) ──
+              'lg:right-0 lg:top-0 lg:h-full lg:w-[420px] lg:bottom-auto lg:max-h-full lg:overflow-y-auto',
+              // ── Mobile: bottom sheet at 42vh ──
               'bottom-0 left-0 right-0 lg:left-auto',
-              'max-h-[80vh] lg:max-h-full overflow-y-auto',
+              'max-h-[42vh] lg:max-h-full overflow-y-auto',
               'bg-[#0d1625] border-l border-accent-gold/20',
               'lg:rounded-none rounded-t-2xl',
               'shadow-2xl shadow-black/60',
             ].join(' ')}
           >
             {/* Mobile drag handle */}
-            <div className="lg:hidden flex justify-center pt-3 pb-1">
+            <div className="lg:hidden flex justify-center pt-3 pb-1 sticky top-0 bg-[#0d1625] z-10">
               <div className="w-10 h-1 rounded-full bg-accent-gold/30" />
             </div>
 
@@ -164,6 +185,35 @@ export function DestinationPanel({ destination, weather, onClose, onBack }: Dest
                 </Link>
               </div>
             </div>
+
+            {/* Mobile-only: "Scroll for more" hint — fades out after scrolling 20px */}
+            <motion.div
+              className="lg:hidden sticky bottom-0 left-0 right-0 flex flex-col items-center justify-center py-2 pointer-events-none"
+              style={{
+                background: 'linear-gradient(to top, #0d1625 60%, transparent)',
+              }}
+              initial={{ opacity: 1 }}
+              animate={{ opacity: hasScrolled ? 0 : 1 }}
+              transition={{ duration: 0.4 }}
+              aria-hidden="true"
+            >
+              <span
+                className="text-accent-gold/60 mb-0.5"
+                style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: '10px',
+                  letterSpacing: '0.1em',
+                }}
+              >
+                scroll for more
+              </span>
+              <motion.div
+                animate={{ y: [0, 3, 0] }}
+                transition={{ repeat: Infinity, duration: 1.2, ease: 'easeInOut' }}
+              >
+                <ChevronDown className="w-3.5 h-3.5 text-accent-gold/50" />
+              </motion.div>
+            </motion.div>
           </motion.div>
         </>
       )}
