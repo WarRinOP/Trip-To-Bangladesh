@@ -107,8 +107,10 @@ function buildUserMessage(
 // ─── POST Handler ───────────────────────────────────────
 export async function POST(request: NextRequest) {
   // 0. Check Claude is available
+  console.log('[Itinerary] Key present:', !!process.env.ANTHROPIC_API_KEY);
   const anthropic = getAnthropicClient();
   if (!anthropic) {
+    console.error('[Itinerary] ANTHROPIC_API_KEY missing — returning 503');
     return NextResponse.json(
       { error: 'AI itinerary generator is not available. Please contact us directly.', comingSoon: true },
       { status: 503 }
@@ -188,7 +190,7 @@ export async function POST(request: NextRequest) {
   // 5. Stream Claude response
   try {
     const stream = await anthropic.messages.stream({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-3-5-sonnet-20241022',
       max_tokens: 4096,
       system: buildSystemPrompt(toursJson),
       messages: [
