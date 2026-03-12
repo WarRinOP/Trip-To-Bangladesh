@@ -99,8 +99,8 @@ export default async function AdminOverview() {
                     <td className="py-3 pr-4 text-text-muted">
                       {new Date(inq.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}
                     </td>
-                    <td className="py-3 pr-4 text-text-primary">{inq.full_name}</td>
-                    <td className="py-3 pr-4 text-text-muted">{inq.tour_interest}</td>
+                    <td className="py-3 pr-4 text-text-primary">{inq.name}</td>
+                    <td className="py-3 pr-4 text-text-muted">{inq.message?.split('\n')[0] ?? '—'}</td>
                     <td className="py-3">
                       <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${statusColor[inq.status] ?? ''}`}>
                         {inq.status}

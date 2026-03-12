@@ -7,12 +7,12 @@ import { ChevronDown, ChevronUp, Search } from 'lucide-react';
 interface Inquiry {
   id: string;
   created_at: string;
-  full_name: string;
+  name: string;       // the actual column name
   email: string;
   phone: string | null;
-  tour_interest: string;
-  travel_dates: string;
-  group_size: string;
+  tour_id: string | null;
+  travel_date: string | null;
+  guests: number | null;
   message: string | null;
   status: string;
 }
@@ -33,7 +33,7 @@ export function InquiriesTable({ inquiries }: { inquiries: Inquiry[] }) {
     if (!searchQuery) return true;
     const q = searchQuery.toLowerCase();
     return (
-      inq.full_name.toLowerCase().includes(q) ||
+      inq.name.toLowerCase().includes(q) ||
       inq.email.toLowerCase().includes(q)
     );
   });
@@ -90,11 +90,11 @@ export function InquiriesTable({ inquiries }: { inquiries: Inquiry[] }) {
                       className="border-b border-accent-gold/5 hover:bg-white/5 transition-colors cursor-pointer"
                     >
                       <td className="p-4 text-text-muted">{formatDate(inq.created_at)}</td>
-                      <td className="p-4 text-text-primary font-medium">{inq.full_name}</td>
+                      <td className="p-4 text-text-primary font-medium">{inq.name}</td>
                       <td className="p-4 text-text-muted hidden md:table-cell">{inq.email}</td>
-                      <td className="p-4 text-text-muted">{inq.tour_interest}</td>
-                      <td className="p-4 text-text-muted hidden lg:table-cell">{inq.travel_dates}</td>
-                      <td className="p-4 text-text-muted hidden lg:table-cell">{inq.group_size}</td>
+                      <td className="p-4 text-text-muted">{inq.message?.split('\n')[0] ?? '—'}</td>
+                      <td className="p-4 text-text-muted hidden lg:table-cell">{inq.travel_date ?? '—'}</td>
+                      <td className="p-4 text-text-muted hidden lg:table-cell">{inq.guests ?? '—'}</td>
                       <td className="p-4">
                         <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${statusBadge[inq.status] ?? ''}`}>
                           {inq.status}
@@ -124,11 +124,11 @@ export function InquiriesTable({ inquiries }: { inquiries: Inquiry[] }) {
                             </div>
                             <div>
                               <span className="text-text-muted block text-xs uppercase tracking-wider mb-1">Travel Dates</span>
-                              <span className="text-text-primary">{inq.travel_dates}</span>
+                              <span className="text-text-primary">{inq.travel_date ?? 'N/A'}</span>
                             </div>
                             <div>
                               <span className="text-text-muted block text-xs uppercase tracking-wider mb-1">Group Size</span>
-                              <span className="text-text-primary">{inq.group_size}</span>
+                              <span className="text-text-primary">{inq.guests ?? 'N/A'}</span>
                             </div>
                             {inq.message && (
                               <div className="md:col-span-2">

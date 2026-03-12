@@ -331,7 +331,7 @@ export default async function TourPage({ params }: { params: { slug: string } })
 
                                     <div className="mt-4 text-center">
                                         <Link
-                                            href="https://wa.me/8801XXXXXXXXX"
+                                            href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? ''}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="text-accent-gold text-sm hover:text-white transition-colors"
