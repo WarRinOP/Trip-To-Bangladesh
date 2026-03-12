@@ -98,17 +98,23 @@ NEXT_PUBLIC_MAPBOX_TOKEN
 - admin_users (protected access)
 - Blog → managed entirely in Sanity CMS
 
-## Pages (7 total)
+## Navigation Order
+Home | Why Us | Destinations | Our Story | Travel Guide | Contact | [AI Planner] [Plan Your Journey]
+- Desktop: "Why Us" click → opens WhyUsModal
+- Mobile: "Why Us" tap → navigates to /why-us directly
+
+## Pages (8 total)
 1. Homepage — cinematic hero, trust bar, legacy teaser, 
    6 destination cards, testimonials, CTA
-2. Our Story — Mahmud Hasan Khan legacy, Lonely Planet 
+2. Why Us — Guardian Angel story, 7 sections, full brand trust page
+3. Our Story — Mahmud Hasan Khan legacy, Lonely Planet 
    recognition, Tajwar's handover
-3. Destinations — overview of all 6 tours
-4. Individual Tour Pages ×6 — Sundarbans, Cox's Bazar, 
+4. Destinations — overview of all 6 tours
+5. Individual Tour Pages ×6 — Sundarbans, Cox's Bazar, 
    Dhaka, Village Life, Hill Tracts, Coastal Bangladesh
-5. Testimonials — international reviews, country flags
-6. Blog — SEO travel guides via Sanity
-7. Contact & Book — WhatsApp CTA, inquiry form, 24hr promise
+6. Testimonials — international reviews, country flags
+7. Blog — SEO travel guides via Sanity
+8. Contact & Book — WhatsApp CTA, inquiry form, 24hr promise
 
 ## Agent Rules
 - Always follow the design system above
@@ -190,8 +196,10 @@ NEXT_PUBLIC_MAPBOX_TOKEN
 - components/ui/GlowingPin.tsx
 - components/ui/DestinationPanel.tsx
 - components/ui/MapSkeleton.tsx
+- components/ui/WhyUsModal.tsx
 - app/map/page.tsx
 - app/map/loading.tsx
+- app/why-us/page.tsx
 
 ## Database (Live in Supabase)
 - inquiries table ✅

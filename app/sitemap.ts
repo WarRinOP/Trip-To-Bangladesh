@@ -37,6 +37,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1.0,
     },
 
+    // ── Why Us ────────────────────────────────────────────────
+    {
+      url: `${BASE_URL}/why-us`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.8,
+    },
+
     // ── Destinations overview ─────────────────────────────────
     {
       url: `${BASE_URL}/destinations`,

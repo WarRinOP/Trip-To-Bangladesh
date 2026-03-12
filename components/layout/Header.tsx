@@ -5,7 +5,9 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Sparkles } from 'lucide-react';
+import { WhyUsModal } from '@/components/ui/WhyUsModal';
 
+// Standard nav links (no Why Us — handled separately below)
 const LINKS = [
     { label: 'Home', href: '/' },
     { label: 'Destinations', href: '/destinations' },
@@ -17,6 +19,7 @@ const LINKS = [
 export function Header() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isWhyUsOpen, setIsWhyUsOpen] = useState(false);
     const pathname = usePathname();
 
     useEffect(() => {
@@ -32,6 +35,8 @@ export function Header() {
     useEffect(() => {
         setIsMobileMenuOpen(false);
     }, [pathname]);
+
+    const isWhyUsActive = pathname === '/why-us';
 
     return (
         <>
@@ -50,7 +55,8 @@ export function Header() {
 
                         {/* Desktop Navigation */}
                         <nav className="hidden md:flex items-center space-x-8">
-                            {LINKS.map((link) => {
+                            {/* Home */}
+                            {LINKS.slice(0, 1).map((link) => {
                                 const isActive = pathname === link.href;
                                 return (
                                     <Link
@@ -59,7 +65,44 @@ export function Header() {
                                         className="relative group text-sm font-medium text-text-primary hover:text-accent-gold transition-colors focus:outline-none focus:text-accent-gold"
                                     >
                                         {link.label}
-                                        {/* Hover Gold Underline */}
+                                        <motion.div
+                                            className="absolute -bottom-1 left-0 right-0 h-0.5 bg-accent-gold origin-left"
+                                            initial={{ scaleX: isActive ? 1 : 0 }}
+                                            whileHover={{ scaleX: 1 }}
+                                            animate={{ scaleX: isActive ? 1 : 0 }}
+                                            transition={{ duration: 0.3, ease: 'easeOut' }}
+                                        />
+                                    </Link>
+                                );
+                            })}
+
+                            {/* Why Us — desktop: opens modal */}
+                            <button
+                                onClick={() => setIsWhyUsOpen(true)}
+                                className="relative group text-sm font-medium text-text-primary hover:text-accent-gold transition-colors focus:outline-none focus:text-accent-gold cursor-pointer"
+                                aria-haspopup="dialog"
+                                aria-expanded={isWhyUsOpen}
+                            >
+                                Why Us
+                                <motion.div
+                                    className="absolute -bottom-1 left-0 right-0 h-0.5 bg-accent-gold origin-left"
+                                    initial={{ scaleX: isWhyUsActive ? 1 : 0 }}
+                                    whileHover={{ scaleX: 1 }}
+                                    animate={{ scaleX: isWhyUsActive ? 1 : 0 }}
+                                    transition={{ duration: 0.3, ease: 'easeOut' }}
+                                />
+                            </button>
+
+                            {/* Remaining links: Destinations, Our Story, Travel Guide, Contact */}
+                            {LINKS.slice(1).map((link) => {
+                                const isActive = pathname === link.href;
+                                return (
+                                    <Link
+                                        key={link.label}
+                                        href={link.href}
+                                        className="relative group text-sm font-medium text-text-primary hover:text-accent-gold transition-colors focus:outline-none focus:text-accent-gold"
+                                    >
+                                        {link.label}
                                         <motion.div
                                             className="absolute -bottom-1 left-0 right-0 h-0.5 bg-accent-gold origin-left"
                                             initial={{ scaleX: isActive ? 1 : 0 }}
@@ -74,11 +117,10 @@ export function Header() {
                             {/* AI Planner button */}
                             <Link
                                 href="/itinerary-generator"
-                                className={`relative inline-flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium rounded-full border transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent-gold/50 ${
-                                    pathname === '/itinerary-generator'
+                                className={`relative inline-flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium rounded-full border transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent-gold/50 ${pathname === '/itinerary-generator'
                                         ? 'bg-accent-gold/20 border-accent-gold text-accent-gold shadow-[0_0_14px_rgba(201,168,76,0.35)]'
                                         : 'border-accent-gold/40 text-accent-gold/80 hover:border-accent-gold hover:text-accent-gold hover:shadow-[0_0_14px_rgba(201,168,76,0.25)] hover:bg-accent-gold/10'
-                                }`}
+                                    }`}
                                 aria-label="AI Itinerary Planner"
                             >
                                 <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
@@ -126,7 +168,24 @@ export function Header() {
                         className="fixed inset-0 z-40 bg-background-primary pt-24 pb-6 px-4 flex flex-col items-center shadow-xl md:hidden overflow-y-auto"
                     >
                         <nav className="flex flex-col space-y-6 text-center w-full max-w-sm">
-                            {LINKS.map((link) => (
+                            {/* Home */}
+                            <Link
+                                href="/"
+                                className="text-xl font-serif text-text-primary hover:text-accent-gold transition-colors focus:outline-none focus:text-accent-gold"
+                            >
+                                Home
+                            </Link>
+
+                            {/* Why Us — mobile: full page navigation */}
+                            <Link
+                                href="/why-us"
+                                className="text-xl font-serif text-text-primary hover:text-accent-gold transition-colors focus:outline-none focus:text-accent-gold"
+                            >
+                                Why Us
+                            </Link>
+
+                            {/* Remaining standard links */}
+                            {LINKS.slice(1).map((link) => (
                                 <Link
                                     key={link.label}
                                     href={link.href}
@@ -135,6 +194,7 @@ export function Header() {
                                     {link.label}
                                 </Link>
                             ))}
+
                             <div className="pt-4 flex flex-col gap-3 w-full">
                                 {/* AI Planner — mobile */}
                                 <Link
@@ -159,6 +219,9 @@ export function Header() {
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* Why Us Modal — desktop only (conditionally rendered) */}
+            <WhyUsModal isOpen={isWhyUsOpen} onClose={() => setIsWhyUsOpen(false)} />
         </>
     );
 }
