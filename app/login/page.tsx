@@ -80,7 +80,20 @@ function LoginForm() {
                                 className="flex items-center gap-3 bg-red-900/20 border border-red-700/40 text-red-400 p-4 text-sm mb-6"
                             >
                                 <AlertCircle className="w-5 h-5 shrink-0" />
-                                Invalid or expired reset link. Please request a new one.
+                                Invalid or expired reset link. Please{' '}
+                                <a href="/login/forgot-password" className="underline hover:text-red-300">request a new one</a>.
+                            </motion.div>
+                        )}
+
+                        {urlError === 'link_expired' && (
+                            <motion.div
+                                initial={{ opacity: 0, y: -8 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="flex items-center gap-3 bg-amber-900/20 border border-amber-700/40 text-amber-400 p-4 text-sm mb-6"
+                            >
+                                <AlertCircle className="w-5 h-5 shrink-0" />
+                                Your reset link has expired.{' '}
+                                <a href="/login/forgot-password" className="underline hover:text-amber-300">Request a new one →</a>
                             </motion.div>
                         )}
                     </AnimatePresence>
@@ -133,6 +146,15 @@ function LoginForm() {
                                 'Log in'
                             )}
                         </button>
+
+                        <div className="text-center">
+                            <a
+                                href="/login/forgot-password"
+                                className="text-text-muted text-xs hover:text-accent-gold transition-colors"
+                            >
+                                Forgot password?
+                            </a>
+                        </div>
                     </form>
                 </div>
             </motion.div>
