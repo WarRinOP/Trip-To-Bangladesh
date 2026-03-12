@@ -90,6 +90,13 @@ export default function DestinationsPage() {
                 </div>
             </ParallaxHero>
 
+            {/* AI Planner nudge — top, right after hero */}
+            <section className="bg-background-secondary border-b border-accent-gold/15 py-8">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <AIPlannerNudge variant="banner" />
+                </div>
+            </section>
+
             {/* Destinations Grid */}
             <section className="py-24 bg-background-primary">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -131,11 +138,6 @@ export default function DestinationsPage() {
                             </ScrollReveal>
                         ))}
                     </div>
-
-                    {/* AI Planner nudge */}
-                    <ScrollReveal delay={0.2} className="mt-14">
-                        <AIPlannerNudge variant="banner" />
-                    </ScrollReveal>
 
                     {/* Bottom CTA */}
                     <ScrollReveal delay={0.3} className="text-center mt-12">

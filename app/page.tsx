@@ -1,4 +1,4 @@
-import { AIPlannerNudge } from "@/components/ui/AIPlannerNudge";
+import { Sparkles } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -75,9 +75,10 @@ export default function HomePage() {
                   Plan Your Journey
                 </Button>
               </Link>
-              <Link href="/about" className="w-full sm:w-auto">
-                <Button variant="outline" className="w-full text-lg">
-                  Our Story
+              <Link href="/itinerary-generator" className="w-full sm:w-auto">
+                <Button variant="outline" className="w-full text-lg inline-flex items-center justify-center gap-2">
+                  <Sparkles className="w-4 h-4" />
+                  Plan With AI
                 </Button>
               </Link>
             </div>
@@ -89,13 +90,6 @@ export default function HomePage() {
           <ChevronDown className="w-10 h-10 text-accent-gold opacity-80" />
         </div>
       </ParallaxHero>
-
-      {/* AI PLANNER NUDGE — first thing below the hero */}
-      <section className="bg-background-secondary border-b border-accent-gold/15 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <AIPlannerNudge variant="banner" />
-        </div>
-      </section>
 
       {/* SECTION 2 - Trust Bar */}
       <div className="bg-background-secondary border-y border-accent-gold/20">
