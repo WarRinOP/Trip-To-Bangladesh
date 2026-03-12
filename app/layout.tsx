@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { PageTransition } from "@/components/layout/PageTransition";
+import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -36,6 +37,7 @@ export default function RootLayout({
           </PageTransition>
         </main>
         <Footer />
+        <WhatsAppButton />
       </body>
     </html>
   );
