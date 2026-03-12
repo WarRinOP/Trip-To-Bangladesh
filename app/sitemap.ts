@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 import { sanityClient } from '@/lib/sanity';
 
-const BASE_URL = 'https://trip2bangladesh.com';
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://trip-to-bangladesh.vercel.app';
 
 const DESTINATION_SLUGS = [
   'sundarbans',

@@ -17,7 +17,7 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-const SITE_URL = "https://trip2bangladesh.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://trip-to-bangladesh.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
