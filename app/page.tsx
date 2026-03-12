@@ -81,6 +81,11 @@ export default function HomePage() {
                   Plan With AI
                 </Button>
               </Link>
+              <Link href="/about" className="w-full sm:w-auto">
+                <Button variant="outline" className="w-full text-lg">
+                  Our Story
+                </Button>
+              </Link>
             </div>
           </FadeIn>
         </div>
