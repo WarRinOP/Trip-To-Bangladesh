@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import { Destination } from '@/lib/destinations';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { X, Clock, MapPin, Sparkles, ExternalLink } from 'lucide-react';
+import { X, Clock, MapPin, Sparkles, ExternalLink, ArrowLeft } from 'lucide-react';
 
 interface WeatherData {
   temp: number;
@@ -16,12 +16,12 @@ interface DestinationPanelProps {
   destination: Destination | null;
   weather?: WeatherData | null;
   onClose: () => void;
+  onBack?: () => void; // Flies back to Bangladesh overview + clears spots
 }
 
-export function DestinationPanel({ destination, weather, onClose }: DestinationPanelProps) {
+export function DestinationPanel({ destination, weather, onClose, onBack }: DestinationPanelProps) {
   const panelRef = useRef<HTMLDivElement>(null);
 
-  // Close on Escape key
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Escape') onClose();
   };
@@ -49,20 +49,15 @@ export function DestinationPanel({ destination, weather, onClose }: DestinationP
             aria-label={`${destination.name} tour details`}
             onKeyDown={handleKeyDown}
             tabIndex={-1}
-            // Desktop: slide from right
-            // Mobile: slide from bottom (via className + initial/animate)
             initial={{ x: '100%', opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: '100%', opacity: 0 }}
             transition={{ type: 'spring', damping: 28, stiffness: 300 }}
             className={[
               'fixed z-[1001]',
-              // Desktop
               'lg:right-0 lg:top-0 lg:h-full lg:w-[420px] lg:bottom-auto',
-              // Mobile: bottom sheet
               'bottom-0 left-0 right-0 lg:left-auto',
               'max-h-[80vh] lg:max-h-full overflow-y-auto',
-              // Styling
               'bg-[#0d1625] border-l border-accent-gold/20',
               'lg:rounded-none rounded-t-2xl',
               'shadow-2xl shadow-black/60',
@@ -73,7 +68,7 @@ export function DestinationPanel({ destination, weather, onClose }: DestinationP
               <div className="w-10 h-1 rounded-full bg-accent-gold/30" />
             </div>
 
-            {/* Close button */}
+            {/* Close / X button */}
             <button
               onClick={onClose}
               aria-label="Close destination panel"
@@ -84,6 +79,19 @@ export function DestinationPanel({ destination, weather, onClose }: DestinationP
 
             {/* Content */}
             <div className="p-6 pt-4 lg:pt-6">
+
+              {/* ← Back to Overview button */}
+              {onBack && (
+                <button
+                  onClick={onBack}
+                  className="flex items-center gap-1.5 text-accent-gold/60 hover:text-accent-gold text-xs font-medium transition-colors duration-200 mb-5 group cursor-pointer"
+                  aria-label="Back to Bangladesh overview"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform duration-200" />
+                  Back to Overview
+                </button>
+              )}
+
               {/* Weather + location header */}
               <div className="flex items-center gap-2 mb-4">
                 <MapPin className="w-3.5 h-3.5 text-accent-gold" />
