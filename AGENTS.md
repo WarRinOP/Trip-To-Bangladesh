@@ -50,6 +50,8 @@
     /admin/blog
   /itinerary-generator → AI Itinerary Generator
   /api/itinerary → Streaming AI API route
+  /map → Interactive Destination Map
+  /api/weather → Open-Meteo weather proxy (1hr cache)
 /components
   /ui
   /layout
@@ -69,6 +71,7 @@ SANITY_PROJECT_ID
 NEXT_PUBLIC_GA_MEASUREMENT_ID
 NEXT_PUBLIC_SITE_URL
 ANTHROPIC_API_KEY
+NEXT_PUBLIC_MAPBOX_TOKEN
 
 ## Security Rules (NON-NEGOTIABLE)
 - SUPABASE_SERVICE_ROLE_KEY → server-side only, never in 
@@ -126,6 +129,7 @@ ANTHROPIC_API_KEY
 - Phase 5: Complete ✅ (Contact page, Admin dashboard, WhatsApp)
 - Phase 6: Complete ✅ (SEO, sitemap, robots, OG image, JSON-LD, loading states, error pages, GA)
 - Phase 8: Complete ✅ (AI Itinerary Generator with Claude, streaming, rate limiting)
+- Phase 9: Complete ✅ (Interactive Destination Map — Mapbox, glowing pins, weather, route lines, panel)
 - Background updated to midnight navy #0a0f1a
 - Animations added: ScrollReveal, AnimatedHeading,
   AnimatedCounter, 3D card tilt, MeetYourCEOHeading
@@ -175,11 +179,19 @@ ANTHROPIC_API_KEY
 - app/admin/blog/page.tsx
 - lib/anthropic.ts (Claude AI client)
 - lib/itinerary.ts (Zod schemas + types)
+- lib/destinations.ts (map coordinates + metadata)
 - app/api/itinerary/route.ts (streaming API)
+- app/api/weather/route.ts (Open-Meteo weather, 1hr cache)
 - components/sections/ItineraryForm.tsx
 - components/sections/ItineraryResult.tsx
 - components/ui/ItineraryTimeline.tsx
 - app/itinerary-generator/page.tsx
+- components/ui/MapView.tsx
+- components/ui/GlowingPin.tsx
+- components/ui/DestinationPanel.tsx
+- components/ui/MapSkeleton.tsx
+- app/map/page.tsx
+- app/map/loading.tsx
 
 ## Database (Live in Supabase)
 - inquiries table ✅

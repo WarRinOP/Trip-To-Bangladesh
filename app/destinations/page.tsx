@@ -2,13 +2,21 @@ import { AIPlannerNudge } from '@/components/ui/AIPlannerNudge';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import { ParallaxHero } from '@/components/ui/ParallaxHero';
 import { AnimatedHeading } from '@/components/ui/AnimatedHeading';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
 import { TiltCard } from '@/components/ui/TiltCard';
 import { Button } from '@/components/ui/Button';
 import { FadeIn } from '@/components/ui/FadeIn';
+import { MapSkeleton } from '@/components/ui/MapSkeleton';
 import { MapPin } from 'lucide-react';
+
+// Dynamic import — Mapbox requires browser APIs, never SSR
+const MapView = dynamic(
+  () => import('@/components/ui/MapView').then((m) => m.MapView),
+  { ssr: false, loading: () => <MapSkeleton variant="compact" /> }
+);
 
 export const metadata: Metadata = {
     title: 'Bangladesh Tour Packages & Destinations',
@@ -148,6 +156,29 @@ export default function DestinationsPage() {
                             <Button variant="primary" className="text-lg px-10">
                                 Speak With Our Guides
                             </Button>
+                        </Link>
+                    </ScrollReveal>
+                </div>
+            </section>
+
+            {/* Interactive Map Section */}
+            <section className="py-20 bg-background-secondary">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <ScrollReveal className="text-center mb-10">
+                        <p className="text-xs tracking-[0.3em] uppercase text-accent-gold/60 mb-3 font-medium">
+                            Interactive
+                        </p>
+                        <AnimatedHeading text="Explore Bangladesh" className="font-serif text-4xl md:text-5xl text-text-primary mb-4" />
+                        <p className="text-text-muted text-base">
+                            Click any destination to discover your next adventure
+                        </p>
+                    </ScrollReveal>
+                    <div className="rounded-lg overflow-hidden border border-accent-gold/20 shadow-2xl shadow-black/40">
+                        <MapView variant="compact" />
+                    </div>
+                    <ScrollReveal className="text-center mt-6">
+                        <Link href="/map" className="text-accent-gold/60 hover:text-accent-gold text-sm transition-colors duration-200 underline underline-offset-4">
+                            Open full interactive map →
                         </Link>
                     </ScrollReveal>
                 </div>
