@@ -8,6 +8,7 @@ import { ScrollReveal } from '@/components/ui/ScrollReveal';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { TourInquiryForm } from '@/components/sections/TourInquiryForm';
+import { AIPlannerNudge } from '@/components/ui/AIPlannerNudge';
 import { Check, Clock, Users, DollarSign, MapPin } from 'lucide-react';
 
 // Tours with static fallback data — destinations exist regardless of DB state
@@ -307,6 +308,11 @@ export default async function TourPage({ params }: { params: { slug: string } })
                             </div>
                         </ScrollReveal>
 
+                        {/* AI Planner nudge — after itinerary */}
+                        <ScrollReveal>
+                            <AIPlannerNudge variant="card" />
+                        </ScrollReveal>
+
                         {/* What's Included */}
                         <ScrollReveal>
                             <h2 className="font-serif text-3xl text-accent-gold mb-6">What&apos;s Included</h2>
@@ -367,6 +373,11 @@ export default async function TourPage({ params }: { params: { slug: string } })
                                         >
                                             💬 WhatsApp Us Instead
                                         </Link>
+                                    </div>
+
+                                    {/* AI Nudge — sidebar card */}
+                                    <div className="mt-6 border-t border-accent-gold/15 pt-6">
+                                        <AIPlannerNudge variant="card" />
                                     </div>
                                 </div>
                             </ScrollReveal>

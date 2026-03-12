@@ -1,3 +1,4 @@
+import { AIPlannerNudge } from "@/components/ui/AIPlannerNudge";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -208,6 +209,15 @@ export default function HomePage() {
                 </Link>
               ))}
             </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* AI PLANNER NUDGE — between destinations and CTA */}
+      <section className="bg-background-secondary border-y border-accent-gold/10 py-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ScrollReveal>
+            <AIPlannerNudge variant="banner" />
           </ScrollReveal>
         </div>
       </section>

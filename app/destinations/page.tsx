@@ -1,3 +1,4 @@
+import { AIPlannerNudge } from '@/components/ui/AIPlannerNudge';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -131,8 +132,13 @@ export default function DestinationsPage() {
                         ))}
                     </div>
 
+                    {/* AI Planner nudge */}
+                    <ScrollReveal delay={0.2} className="mt-14">
+                        <AIPlannerNudge variant="banner" />
+                    </ScrollReveal>
+
                     {/* Bottom CTA */}
-                    <ScrollReveal delay={0.3} className="text-center mt-20">
+                    <ScrollReveal delay={0.3} className="text-center mt-12">
                         <p className="text-text-muted text-lg mb-6">
                             Not sure which journey is right for you?
                         </p>

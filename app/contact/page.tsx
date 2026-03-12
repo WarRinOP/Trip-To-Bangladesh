@@ -4,6 +4,7 @@ import { AnimatedHeading } from '@/components/ui/AnimatedHeading';
 import { FadeIn } from '@/components/ui/FadeIn';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
 import { ContactInquiryForm } from '@/components/sections/ContactInquiryForm';
+import { AIPlannerNudge } from '@/components/ui/AIPlannerNudge';
 import { Award, Globe2, Clock, MessageCircle, Mail, MapPin } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -50,6 +51,10 @@ export default function ContactPage() {
             {/* LEFT — Inquiry Form (3 cols) */}
             <div className="lg:col-span-3">
               <ScrollReveal>
+                {/* AI Planner nudge above the form */}
+                <div className="mb-6">
+                  <AIPlannerNudge variant="banner" />
+                </div>
                 <div className="border border-accent-gold/20 p-8 md:p-10">
                   <h2 className="font-serif text-3xl text-accent-gold mb-2">Send Us an Inquiry</h2>
                   <p className="text-text-muted mb-8">
