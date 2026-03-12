@@ -88,7 +88,7 @@ export function WhyUsModal({ isOpen, onClose }: WhyUsModalProps) {
                 className="text-accent-gold/70 mb-4 tracking-[0.2em]"
                 style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '10px' }}
               >
-                EST. 2004 · DHAKA, BANGLADESH
+                EST. 2000 · DHAKA, BANGLADESH
               </p>
 
               {/* Headline */}

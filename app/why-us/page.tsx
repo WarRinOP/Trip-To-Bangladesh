@@ -74,7 +74,7 @@ export default function WhyUsPage() {
             className="text-accent-gold/70 mb-6 tracking-[0.25em]"
             style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px' }}
           >
-            EST. 2004 · DHAKA, BANGLADESH
+            EST. 2000 · DHAKA, BANGLADESH
           </p>
           <h1 className="font-serif font-light leading-tight mb-6" style={{ fontSize: 'clamp(42px, 7vw, 72px)' }}>
             Not a travel app.<br />
