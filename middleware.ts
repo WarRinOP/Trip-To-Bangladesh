@@ -27,23 +27,27 @@ export async function middleware(request: NextRequest) {
         }
     )
 
-    // refresh session if expired
+    // Refresh session if expired
     const {
         data: { user },
     } = await supabase.auth.getUser()
 
-    const isAuthRoute = request.nextUrl.pathname.startsWith('/login')
-    const isAdminRoute = request.nextUrl.pathname.startsWith('/admin')
+    const pathname = request.nextUrl.pathname
+    const isLoginRoute = pathname.startsWith('/login')
+    const isAdminRoute = pathname.startsWith('/admin')
+    // /auth/** must always be accessible (callback, reset-password)
+    const isAuthRoute = pathname.startsWith('/auth')
 
-    // Redirect unauthenticated users to /login
+    // Redirect unauthenticated users away from /admin to /login
     if (isAdminRoute && !user) {
         const url = request.nextUrl.clone()
         url.pathname = '/login'
         return NextResponse.redirect(url)
     }
 
-    // Redirect authenticated users away from /login to /admin
-    if (isAuthRoute && user) {
+    // Redirect authenticated users away from /login → /admin
+    // (but NOT from /auth/* routes — those need to work even with a session)
+    if (isLoginRoute && !isAuthRoute && user) {
         const url = request.nextUrl.clone()
         url.pathname = '/admin'
         return NextResponse.redirect(url)
