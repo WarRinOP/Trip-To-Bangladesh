@@ -7,11 +7,12 @@ import { ContactInquiryForm } from '@/components/sections/ContactInquiryForm';
 import { Award, Globe2, Clock, MessageCircle, Mail, MapPin } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Contact & Book Your Journey | Trip to Bangladesh',
+  title: 'Book a Bangladesh Tour — Contact Us',
   description:
-    'Get in touch with our expert team. We respond within 24 hours with a personalised itinerary. WhatsApp available for instant chat.',
+    'Ready to explore Bangladesh? Contact our expert guides. We respond within 24 hours. Recognized by Lonely Planet.',
+  alternates: { canonical: 'https://trip2bangladesh.com/contact' },
   openGraph: {
-    title: 'Begin Your Journey | Trip to Bangladesh',
+    title: 'Book a Bangladesh Tour — Contact Us',
     description: 'Tell us your dream trip. We will make it real.',
   },
 };

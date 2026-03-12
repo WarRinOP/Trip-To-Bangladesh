@@ -7,11 +7,12 @@ import { createServerClient } from '@/lib/supabase';
 import { Award, Star } from 'lucide-react';
 
 export const metadata: Metadata = {
-    title: 'Traveler Stories & Reviews | Trip to Bangladesh',
+    title: 'Traveler Reviews — Trip to Bangladesh',
     description:
-        'Read testimonials from travelers across 40+ countries who have experienced Bangladesh with our expert guides. Recognized by Lonely Planet.',
+        'Read reviews from international travelers who explored Bangladesh with us. Trusted by visitors from 40+ countries.',
+    alternates: { canonical: 'https://trip2bangladesh.com/testimonials' },
     openGraph: {
-        title: 'Words From Our Travelers | Trip to Bangladesh',
+        title: 'Traveler Reviews — Trip to Bangladesh',
         description: 'International reviews from 40+ countries.',
         images: [{ url: 'https://images.unsplash.com/photo-1599818815155-8822f7b4ee0b?w=1200' }],
     },

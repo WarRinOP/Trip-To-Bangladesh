@@ -10,11 +10,12 @@ import { FadeIn } from '@/components/ui/FadeIn';
 import { MapPin } from 'lucide-react';
 
 export const metadata: Metadata = {
-    title: 'Explore Bangladesh — Curated Journeys | Trip to Bangladesh',
+    title: 'Bangladesh Tour Packages & Destinations',
     description:
-        'Discover our six extraordinary guided journeys through Bangladesh — from the Sundarbans mangrove forests to Cox\'s Bazar, Dhaka, Village Life, the Hill Tracts, and coastal shores.',
+        'Explore Bangladesh with expert guides. Sundarbans wildlife tours, Cox\'s Bazar beach, Dhaka city tours, village experiences and more.',
+    alternates: { canonical: 'https://trip2bangladesh.com/destinations' },
     openGraph: {
-        title: 'Explore Bangladesh — Curated Journeys',
+        title: 'Bangladesh Tour Packages & Destinations',
         description: 'Six extraordinary journeys. One unforgettable country.',
         images: [{ url: 'https://images.unsplash.com/photo-1627854650570-58ea7add7e2b?w=1200' }],
     },

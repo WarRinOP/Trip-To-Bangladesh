@@ -1,8 +1,21 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ParallaxHero } from "@/components/ui/ParallaxHero";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { MeetYourCEOHeading } from "@/components/ui/MeetYourCEOHeading";
+
+export const metadata: Metadata = {
+  title: "Our Story — A Legacy of Bangladesh Tourism",
+  description:
+    "Meet the family behind Trip to Bangladesh. Founded by Mahmud Hasan Khan, recognized by Lonely Planet as a Guardian Angel for international travelers.",
+  alternates: { canonical: "https://trip2bangladesh.com/about" },
+  openGraph: {
+    title: "Our Story — A Legacy of Bangladesh Tourism",
+    description:
+      "Meet the family behind Trip to Bangladesh. Founded by Mahmud Hasan Khan, recognized by Lonely Planet.",
+  },
+};
 
 export default function AboutPage() {
     return (

@@ -64,6 +64,8 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY
 SUPABASE_SERVICE_ROLE_KEY
 RESEND_API_KEY
 SANITY_PROJECT_ID
+NEXT_PUBLIC_GA_MEASUREMENT_ID
+NEXT_PUBLIC_SITE_URL
 
 ## Security Rules (NON-NEGOTIABLE)
 - SUPABASE_SERVICE_ROLE_KEY → server-side only, never in 
@@ -119,8 +121,9 @@ SANITY_PROJECT_ID
 - Phase 3: Complete ✅ (all UI components built)
 - Phase 4: Complete ✅ (all marketing pages built)
 - Phase 5: Complete ✅ (Contact page, Admin dashboard, WhatsApp)
+- Phase 6: Complete ✅ (SEO, sitemap, robots, OG image, JSON-LD, loading states, error pages, GA)
 - Background updated to midnight navy #0a0f1a
-- Animations added: ScrollReveal, AnimatedHeading, 
+- Animations added: ScrollReveal, AnimatedHeading,
   AnimatedCounter, 3D card tilt, MeetYourCEOHeading
 - Live Vercel deployment confirmed working
 

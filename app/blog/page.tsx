@@ -10,11 +10,12 @@ import { Calendar, Clock, BookOpen } from 'lucide-react';
 import { BlogSubscribeForm } from '@/components/sections/BlogSubscribeForm';
 
 export const metadata: Metadata = {
-    title: 'Bangladesh Travel Guide — Expert Insights | Trip to Bangladesh',
+    title: 'Bangladesh Travel Guide & Tips',
     description:
-        'Expert travel guides, hidden gems, and insider knowledge for the curious traveler heading to Bangladesh. Updated by our on-the-ground team.',
+        'Expert travel guides for Bangladesh. Itineraries, safety tips, best time to visit, visa information and insider knowledge.',
+    alternates: { canonical: 'https://trip2bangladesh.com/blog' },
     openGraph: {
-        title: 'Bangladesh Travel Guide | Trip to Bangladesh',
+        title: 'Bangladesh Travel Guide & Tips',
         description: 'Expert guides, hidden gems, and insider knowledge.',
         images: [{ url: 'https://images.unsplash.com/photo-1620067421115-4673bb22f87a?w=1200' }],
     },

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ParallaxHero } from "@/components/ui/ParallaxHero";
@@ -10,9 +11,44 @@ import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { TiltCard } from "@/components/ui/TiltCard";
 import { FadeIn } from "@/components/ui/FadeIn";
 
+export const metadata: Metadata = {
+  title: "Trip to Bangladesh — Expert Guided Tours",
+  description:
+    "Premium guided tours across Bangladesh. Sundarbans, Cox's Bazar, Dhaka and beyond. 20+ years experience. Lonely Planet recognized.",
+  alternates: { canonical: "https://trip2bangladesh.com" },
+};
+
+// JSON-LD: Organization / TravelAgency
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "TravelAgency",
+  name: "Trip to Bangladesh",
+  url: "https://trip2bangladesh.com",
+  description:
+    "Expert guided tours across Bangladesh. Recognized by Lonely Planet.",
+  foundingDate: "2000",
+  areaServed: "Bangladesh",
+  founder: {
+    "@type": "Person",
+    name: "Mahmud Hasan Khan",
+  },
+  contactPoint: {
+    "@type": "ContactPoint",
+    telephone: "+880-1795-622000",
+    contactType: "customer service",
+    availableLanguage: ["English", "Bengali"],
+  },
+};
+
 export default function HomePage() {
   return (
-    <div className="w-full">
+    <>
+      {/* JSON-LD structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <div className="w-full">
       {/* SECTION 1 - Hero */}
       <ParallaxHero
         imageSrc="https://images.unsplash.com/photo-1627854650570-58ea7add7e2b?q=80&w=2670&auto=format&fit=crop"
@@ -274,5 +310,7 @@ export default function HomePage() {
         </div>
       </section>
     </div>
+    </>
   );
 }
+

@@ -167,11 +167,12 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     const tour = STATIC_TOURS[params.slug];
     if (!tour) return { title: 'Tour Not Found' };
     return {
-        title: `${tour.name} — ${tour.tagline} | Trip to Bangladesh`,
+        title: `${tour.name} | Trip to Bangladesh`,
         description: `Join our expert-guided ${tour.name} journey: ${tour.tagline}. ${tour.highlights[0]}.`,
+        alternates: { canonical: `https://trip2bangladesh.com/destinations/${params.slug}` },
         openGraph: {
             title: `${tour.name} | Trip to Bangladesh`,
-            description: tour.tagline,
+            description: `${tour.tagline}. ${tour.highlights[0]}.`,
             images: [{ url: tour.img }],
         },
     };
@@ -203,8 +204,36 @@ export default async function TourPage({ params }: { params: { slug: string } })
 
     const related = getRelated(params.slug);
 
+    // JSON-LD: TouristTrip schema
+    const jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'TouristTrip',
+        name: staticTour.name,
+        description: `${staticTour.tagline}. ${staticTour.highlights[0]}.`,
+        touristType: 'International travelers',
+        provider: {
+            '@type': 'TravelAgency',
+            name: 'Trip to Bangladesh',
+            url: 'https://trip2bangladesh.com',
+        },
+        ...(dbTour?.price_usd ? {
+            offers: {
+                '@type': 'Offer',
+                price: dbTour.price_usd,
+                priceCurrency: 'USD',
+                availability: 'https://schema.org/InStock',
+            },
+        } : {}),
+    };
+
     return (
-        <div className="w-full">
+        <>
+            {/* JSON-LD structured data */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
+            <div className="w-full">
             {/* Hero */}
             <ParallaxHero
                 imageSrc={tour.img}
@@ -369,5 +398,7 @@ export default async function TourPage({ params }: { params: { slug: string } })
                 </div>
             </section>
         </div>
+        </>
     );
 }
+
