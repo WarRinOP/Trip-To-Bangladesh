@@ -10,6 +10,7 @@ import { AnimatedHeading } from "@/components/ui/AnimatedHeading";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { TiltCard } from "@/components/ui/TiltCard";
 import { FadeIn } from "@/components/ui/FadeIn";
+import { ItineraryForm } from "@/components/sections/ItineraryForm";
 
 export const metadata: Metadata = {
   title: "Trip to Bangladesh — Expert Guided Tours",
@@ -291,7 +292,33 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* SECTION 7 - Final CTA Banner */}
+      {/* SECTION 7 - AI Itinerary Teaser */}
+      <section className="py-24 bg-background-secondary relative overflow-hidden">
+        {/* Subtle background glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-accent-gold/5 rounded-full blur-[100px] pointer-events-none" />
+
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <ScrollReveal>
+            <div className="text-center mb-10">
+              <span className="text-accent-gold text-xs uppercase tracking-[0.3em] mb-4 block">AI-Powered</span>
+              <h2 className="font-serif text-3xl md:text-5xl text-accent-gold mb-4">
+                Plan Your Perfect Bangladesh Journey
+              </h2>
+              <p className="text-text-muted text-base max-w-xl mx-auto">
+                Tell us about your trip. Our AI crafts your perfect itinerary.
+              </p>
+            </div>
+          </ScrollReveal>
+
+          <ScrollReveal>
+            <div className="border border-accent-gold/15 bg-background-primary/50 p-6 md:p-8">
+              <ItineraryForm variant="compact" />
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* SECTION 8 - Final CTA Banner */}
       <section className="py-32 bg-background-primary relative overflow-hidden">
         {/* Subtle background glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent-gold/10 rounded-full blur-[120px] pointer-events-none" />

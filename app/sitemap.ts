@@ -53,6 +53,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     })),
 
+    // ── AI Itinerary Generator ────────────────────────────────
+    {
+      url: `${BASE_URL}/itinerary-generator`,
+      lastModified: now,
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    },
+
     // ── Blog index ────────────────────────────────────────────
     {
       url: `${BASE_URL}/blog`,

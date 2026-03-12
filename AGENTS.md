@@ -48,6 +48,8 @@
     /admin/inquiries
     /admin/tours
     /admin/blog
+  /itinerary-generator → AI Itinerary Generator
+  /api/itinerary → Streaming AI API route
 /components
   /ui
   /layout
@@ -66,6 +68,7 @@ RESEND_API_KEY
 SANITY_PROJECT_ID
 NEXT_PUBLIC_GA_MEASUREMENT_ID
 NEXT_PUBLIC_SITE_URL
+ANTHROPIC_API_KEY
 
 ## Security Rules (NON-NEGOTIABLE)
 - SUPABASE_SERVICE_ROLE_KEY → server-side only, never in 
@@ -122,6 +125,7 @@ NEXT_PUBLIC_SITE_URL
 - Phase 4: Complete ✅ (all marketing pages built)
 - Phase 5: Complete ✅ (Contact page, Admin dashboard, WhatsApp)
 - Phase 6: Complete ✅ (SEO, sitemap, robots, OG image, JSON-LD, loading states, error pages, GA)
+- Phase 8: Complete ✅ (AI Itinerary Generator with Claude, streaming, rate limiting)
 - Background updated to midnight navy #0a0f1a
 - Animations added: ScrollReveal, AnimatedHeading,
   AnimatedCounter, 3D card tilt, MeetYourCEOHeading
@@ -169,6 +173,13 @@ NEXT_PUBLIC_SITE_URL
 - app/admin/inquiries/page.tsx
 - app/admin/tours/page.tsx
 - app/admin/blog/page.tsx
+- lib/anthropic.ts (Claude AI client)
+- lib/itinerary.ts (Zod schemas + types)
+- app/api/itinerary/route.ts (streaming API)
+- components/sections/ItineraryForm.tsx
+- components/sections/ItineraryResult.tsx
+- components/ui/ItineraryTimeline.tsx
+- app/itinerary-generator/page.tsx
 
 ## Database (Live in Supabase)
 - inquiries table ✅
