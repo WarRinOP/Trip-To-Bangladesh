@@ -74,6 +74,15 @@ SANITY_PROJECT_ID
 - CSP headers → configured in next.config.js
 - Admin routes → protected via Supabase Auth middleware
 
+## Known Issues / Future Work
+- Admin OTP login was removed due to double-trigger 
+  bug causing rate limit lockout
+- To be reimplemented in a future phase with:
+  * Single OTP trigger only
+  * 5 minute rate limit window  
+  * Built-in fallback recovery
+  * Currently admin login is email + password only
+
 ## Database Tables
 - inquiries (booking form submissions)
 - tours (tour listings)
