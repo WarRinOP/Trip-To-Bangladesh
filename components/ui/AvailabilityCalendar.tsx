@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Pencil } from 'lucide-react';
 import {
     BlockedDateMap,
@@ -38,6 +39,8 @@ interface DayCellProps {
     selected: string | null;
     blocked: BlockedDateMap;
     isAdmin: boolean;
+    colIndex: number; // 0–6, for popup X-offset correction
+    rowIndex: number; // 0+, for showing popup below on first row
     onSelect: (dateStr: string) => void;
     onAdminBlock: (dateStr: string) => void;
     onAdminUnblock: (dateStr: string, reason: string | null) => void;
@@ -49,12 +52,21 @@ function DayCell({
     selected,
     blocked,
     isAdmin,
+    colIndex,
+    rowIndex,
     onSelect,
     onAdminBlock,
     onAdminUnblock,
 }: DayCellProps) {
+    const [showTooltip, setShowTooltip] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        setIsMobile(window.matchMedia('(hover: none)').matches);
+    }, []);
+
     if (!dateStr) {
-        return <div style={{ minWidth: 40, minHeight: 40 }} aria-hidden="true" />;
+        return <div style={{ width: 40, height: 40 }} aria-hidden="true" />;
     }
 
     const isPast = dateStr < today;
@@ -64,10 +76,7 @@ function DayCell({
     const reason = blocked[dateStr];
     const dayNum = Number(dateStr.split('-')[2]);
 
-    // ─── outer button: transparent, fixed size ──────────────────────────────
-    // Selected state is rendered as a CIRCLE inside, not as the button bg
-    // to prevent overflow onto neighbouring cells.
-
+    // ─── Outer button styles ─────────────────────────────────────────────────
     let outerBg = 'transparent';
     let outerBorder = 'none';
     let outerOpacity = 1;
@@ -82,13 +91,11 @@ function DayCell({
     } else if (isBlocked) {
         outerBg = 'rgba(201,76,76,0.08)';
         outerColor = '#555';
-        outerCursor = isAdmin ? 'pointer' : 'not-allowed';
+        outerCursor = 'pointer'; // always pointer — tooltip on public, unblock on admin
     } else if (isToday && !isSelected) {
         outerBorder = '1px solid rgba(201,168,76,0.5)';
         outerColor = '#c9a84c';
     }
-
-    const tooltipText = isBlocked ? (reason ?? 'Unavailable') : undefined;
 
     const handleClick = () => {
         if (isPast) return;
@@ -99,16 +106,43 @@ function DayCell({
                 onAdminBlock(dateStr);
             }
         } else {
-            if (!isBlocked) {
+            if (isBlocked) {
+                // Mobile: toggle tooltip on tap
+                if (isMobile) setShowTooltip((v) => !v);
+            } else {
+                setShowTooltip(false);
                 onSelect(dateStr);
             }
         }
     };
 
+    // ─── Popup horizontal alignment based on column ──────────────────────────
+    // colIndex 0,1 → align left; 2,3,4 → center; 5,6 → align right
+    let popupLeft: string | undefined;
+    let popupRight: string | undefined;
+    let popupTransform: string | undefined;
+    if (colIndex <= 1) {
+        popupLeft = '-4px';
+    } else if (colIndex >= 5) {
+        popupRight = '-4px';
+    } else {
+        popupLeft = '50%';
+        popupTransform = 'translateX(-50%)';
+    }
+
+    // rowIndex 0 → popup below; else above
+    const popupAbove = rowIndex > 0;
+
     return (
         <button
             type="button"
             onClick={handleClick}
+            onMouseEnter={() => {
+                if (!isMobile && isBlocked && !isAdmin) setShowTooltip(true);
+            }}
+            onMouseLeave={() => {
+                if (!isMobile) setShowTooltip(false);
+            }}
             aria-label={`${formatDateDisplay(dateStr)}${
                 isBlocked
                     ? ` — Unavailable${reason ? ': ' + reason : ''}`
@@ -117,7 +151,6 @@ function DayCell({
                     : ' — Available'
             }`}
             aria-disabled={isPast || (isBlocked && !isAdmin)}
-            data-tooltip={tooltipText}
             className="group relative flex items-center justify-center select-none transition-all duration-200 focus:outline-none"
             style={{
                 width: 40,
@@ -132,6 +165,7 @@ function DayCell({
                 fontFamily: 'Inter, sans-serif',
                 fontSize: 13,
                 position: 'relative',
+                overflow: 'visible',
             }}
         >
             {/* Selected circle — 36×36, centered, never overflows */}
@@ -184,29 +218,113 @@ function DayCell({
                 </span>
             )}
 
-            {/* CSS tooltip */}
-            {tooltipText && (
-                <span
-                    aria-hidden="true"
-                    style={{
-                        position: 'absolute',
-                        bottom: '110%',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        background: '#1a2a3a',
-                        color: '#f5f0e8',
-                        fontSize: 10,
-                        padding: '3px 7px',
-                        whiteSpace: 'nowrap',
-                        pointerEvents: 'none',
-                        opacity: 0,
-                        border: '1px solid rgba(201,168,76,0.2)',
-                        zIndex: 50,
-                    }}
-                    className="group-hover:opacity-100 transition-opacity duration-150"
-                >
-                    {tooltipText}
-                </span>
+            {/* ── Public blocked-date popup ── */}
+            {!isAdmin && isBlocked && (
+                <AnimatePresence>
+                    {showTooltip && (
+                        <motion.div
+                            role="tooltip"
+                            aria-live="polite"
+                            initial={{ opacity: 0, y: popupAbove ? 4 : -4 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, transition: { duration: 0.1 } }}
+                            transition={{ duration: 0.15, ease: 'easeOut' }}
+                            style={{
+                                position: 'absolute',
+                                ...(popupAbove ? { bottom: 'calc(100% + 8px)' } : { top: 'calc(100% + 8px)' }),
+                                ...(popupLeft !== undefined ? { left: popupLeft } : {}),
+                                ...(popupRight !== undefined ? { right: popupRight } : {}),
+                                ...(popupTransform ? { transform: popupTransform } : {}),
+                                minWidth: 160,
+                                maxWidth: 220,
+                                background: '#0f1825',
+                                border: '1px solid rgba(201,168,76,0.3)',
+                                borderLeft: '3px solid #c9a84c',
+                                padding: '10px 14px',
+                                boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+                                zIndex: 100,
+                                pointerEvents: 'none',
+                            }}
+                        >
+                            {/* Triangle pointer */}
+                            <span
+                                aria-hidden="true"
+                                style={{
+                                    position: 'absolute',
+                                    ...(popupAbove
+                                        ? { bottom: -6, borderTop: '6px solid rgba(201,168,76,0.3)', borderBottom: 'none' }
+                                        : { top: -6, borderBottom: '6px solid rgba(201,168,76,0.3)', borderTop: 'none' }),
+                                    left: colIndex <= 1 ? 16 : colIndex >= 5 ? 'auto' : '50%',
+                                    right: colIndex >= 5 ? 16 : 'auto',
+                                    transform: colIndex > 1 && colIndex < 5 ? 'translateX(-50%)' : undefined,
+                                    borderLeft: '6px solid transparent',
+                                    borderRight: '6px solid transparent',
+                                    width: 0,
+                                    height: 0,
+                                }}
+                            />
+
+                            {/* Top row: red dot + UNAVAILABLE label */}
+                            <div className="flex items-center gap-2 mb-1.5">
+                                <span
+                                    aria-hidden="true"
+                                    style={{
+                                        width: 6,
+                                        height: 6,
+                                        borderRadius: '50%',
+                                        background: 'rgba(201,76,76,0.8)',
+                                        flexShrink: 0,
+                                    }}
+                                />
+                                <span
+                                    style={{
+                                        fontFamily: 'JetBrains Mono, monospace',
+                                        fontSize: 9,
+                                        color: '#a89f8c',
+                                        letterSpacing: '2px',
+                                        textTransform: 'uppercase',
+                                    }}
+                                >
+                                    Unavailable
+                                </span>
+                            </div>
+
+                            {/* Divider */}
+                            <div
+                                style={{
+                                    height: 1,
+                                    background: 'rgba(201,168,76,0.1)',
+                                    margin: '6px 0',
+                                }}
+                            />
+
+                            {/* Reason */}
+                            <p
+                                style={{
+                                    fontFamily: 'Inter, sans-serif',
+                                    fontSize: 13,
+                                    color: '#f5f0e8',
+                                    lineHeight: 1.4,
+                                }}
+                            >
+                                {reason ?? 'Date unavailable'}
+                            </p>
+
+                            {/* Bottom hint */}
+                            <p
+                                style={{
+                                    fontFamily: 'Inter, sans-serif',
+                                    fontSize: 10,
+                                    color: '#a89f8c',
+                                    fontStyle: 'italic',
+                                    marginTop: 6,
+                                }}
+                            >
+                                Please select another date
+                            </p>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             )}
         </button>
     );
@@ -295,6 +413,8 @@ function MonthGrid({
                                 selected={selected}
                                 blocked={blocked}
                                 isAdmin={isAdmin}
+                                colIndex={di}
+                                rowIndex={wi}
                                 onSelect={onSelect}
                                 onAdminBlock={onAdminBlock}
                                 onAdminUnblock={onAdminUnblock}
@@ -506,8 +626,9 @@ export function AvailabilityCalendar({
                                     <DayCell
                                         key={di}
                                         dateStr={dateStr}
+                                        colIndex={di}
+                                        rowIndex={wi}
                                         {...sharedProps}
-                                        // Larger cells on mobile
                                     />
                                 ))}
                             </div>
