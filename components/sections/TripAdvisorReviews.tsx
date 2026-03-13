@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Star, User } from 'lucide-react';
+import Link from 'next/link';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 
@@ -381,7 +382,6 @@ export function TripAdvisorReviews() {
                         <p className="text-text-muted text-sm mb-5">
                             These are 11 of our 102 verified reviews
                         </p>
-                        {/* TODO: Replace # with actual TripAdvisor listing URL */}
                         <a
                             href="https://www.tripadvisor.com/Attraction_Review-g293936-d7217166-Reviews-Trip_To_Bangladesh_Day_Tours-Dhaka_City_Dhaka_Division.html"
                             target="_blank"
@@ -390,11 +390,20 @@ export function TripAdvisorReviews() {
                         >
                             Read All 102 Reviews on TripAdvisor →
                         </a>
+                        <div className="mt-3">
+                            <Link
+                                href="/testimonials"
+                                className="inline-flex w-full sm:w-auto items-center justify-center gap-2 px-8 py-3 bg-accent-gold text-background-primary text-sm font-semibold hover:opacity-90 transition-opacity duration-200"
+                            >
+                                View All Testimonials →
+                            </Link>
+                        </div>
                         <p className="text-text-muted text-xs mt-4">
                             Ranked among top tour operators in Bangladesh
                         </p>
                     </div>
                 </ScrollReveal>
+
 
             </div>
         </section>

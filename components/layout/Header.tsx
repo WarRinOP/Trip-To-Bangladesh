@@ -11,6 +11,7 @@ import { WhyUsModal } from '@/components/ui/WhyUsModal';
 const LINKS = [
     { label: 'Home', href: '/' },
     { label: 'Destinations', href: '/destinations' },
+    { label: 'Testimonials', href: '/testimonials' },
     { label: 'Our Story', href: '/about' },
     { label: 'Travel Guide', href: '/blog' },
     { label: 'Contact', href: '/contact' },
