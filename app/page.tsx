@@ -11,6 +11,7 @@ import { AnimatedHeading } from "@/components/ui/AnimatedHeading";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { TiltCard } from "@/components/ui/TiltCard";
 import { FadeIn } from "@/components/ui/FadeIn";
+import { TripAdvisorReviews } from "@/components/sections/TripAdvisorReviews";
 import { ItineraryForm } from "@/components/sections/ItineraryForm";
 
 export const metadata: Metadata = {
@@ -298,6 +299,9 @@ export default function HomePage() {
           </ScrollReveal>
         </div>
       </section>
+
+      {/* SECTION 6b - TripAdvisor Reviews */}
+      <TripAdvisorReviews />
 
       {/* SECTION 7 - AI Itinerary Teaser */}
       <section className="py-24 bg-background-secondary relative overflow-hidden">
