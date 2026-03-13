@@ -23,12 +23,20 @@ export default async function AdminLayout({
 
   // Fetch pending request count (founder only — skip for others to save a DB call)
   let pendingRequestCount = 0;
+  let pendingActivityCount = 0;
   if (isFounder) {
-    const { count } = await admin
-      .from('admin_requests')
-      .select('id', { count: 'exact', head: true })
-      .eq('status', 'pending');
-    pendingRequestCount = count ?? 0;
+    const [{ count: reqCount }, { count: actCount }] = await Promise.all([
+      admin
+        .from('admin_requests')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'pending'),
+      admin
+        .from('activity_requests')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'pending'),
+    ]);
+    pendingRequestCount = reqCount ?? 0;
+    pendingActivityCount = actCount ?? 0;
   }
 
   // Fetch unread inquiry count (all admins)
@@ -47,6 +55,7 @@ export default async function AdminLayout({
         isFounder={isFounder}
         pendingRequestCount={pendingRequestCount}
         unreadInquiryCount={unreadInquiryCount}
+        pendingActivityCount={pendingActivityCount}
       />
 
       {/* Main content — pushed right by sidebar width on desktop */}

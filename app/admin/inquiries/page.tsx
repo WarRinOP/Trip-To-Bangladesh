@@ -1,5 +1,7 @@
-import { createAdminClient } from '@/lib/supabase';
+import { createAdminClient, createServerClient } from '@/lib/supabase';
 import { InquiriesTable } from '@/components/admin/InquiriesTable';
+
+const FOUNDER_EMAIL = 'abrar.tajwar2@gmail.com';
 
 async function getInquiries() {
   const supabase = createAdminClient();
@@ -16,12 +18,16 @@ async function getInquiries() {
 }
 
 export default async function InquiriesPage() {
+  const supabase = createServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const isFounder = user?.email === FOUNDER_EMAIL;
+
   const inquiries = await getInquiries();
 
   return (
     <div>
       <h1 className="font-serif text-3xl text-accent-gold mb-8">Inquiries</h1>
-      <InquiriesTable inquiries={inquiries} />
+      <InquiriesTable inquiries={inquiries} isFounder={isFounder} />
     </div>
   );
 }

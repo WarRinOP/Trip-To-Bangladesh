@@ -17,7 +17,9 @@ import {
   ExternalLink,
   UserPlus,
   Users2,
+  ShieldCheck,
 } from 'lucide-react';
+
 import { logoutAdmin } from '@/app/actions/admin.actions';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -36,9 +38,11 @@ interface SidebarProps {
   isFounder?: boolean;
   pendingRequestCount?: number;
   unreadInquiryCount?: number;
+  pendingActivityCount?: number;
 }
 
-export function Sidebar({ userEmail, isFounder = false, pendingRequestCount = 0, unreadInquiryCount = 0 }: SidebarProps) {
+export function Sidebar({ userEmail, isFounder = false, pendingRequestCount = 0, unreadInquiryCount = 0, pendingActivityCount = 0 }: SidebarProps) {
+
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -159,6 +163,37 @@ export function Sidebar({ userEmail, isFounder = false, pendingRequestCount = 0,
                   {pendingRequestCount}
                 </span>
               )}
+            </Link>
+          )}
+
+          {/* Activity Approval — founder only */}
+          {isFounder && (
+            <Link
+              href="/admin/activity"
+              onClick={() => setMobileOpen(false)}
+              className={cn(
+                'flex items-center gap-3 px-3 py-2.5 text-sm rounded transition-all duration-150',
+                isActive('/admin/activity')
+                  ? 'bg-accent-gold/10 text-accent-gold border-l-2 border-accent-gold pl-[10px]'
+                  : 'text-text-muted hover:text-text-primary hover:bg-white/5 border-l-2 border-transparent pl-[10px]'
+              )}
+            >
+              <ShieldCheck className="w-4 h-4 shrink-0" />
+              <span className="flex-1">Activity Approval</span>
+              <AnimatePresence>
+                {pendingActivityCount > 0 && (
+                  <motion.span
+                    key="activity-badge"
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0, opacity: 0 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                    className="ml-auto min-w-[18px] h-[18px] flex items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold px-1"
+                  >
+                    {pendingActivityCount}
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </Link>
           )}
 

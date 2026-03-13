@@ -29,7 +29,7 @@ const statusBadge: Record<string, string> = {
     booked: 'bg-green-500/10 text-green-400 border border-green-500/20',
 };
 
-export function InquiriesTable({ inquiries: initialInquiries }: { inquiries: Inquiry[] }) {
+export function InquiriesTable({ inquiries: initialInquiries, isFounder = false }: { inquiries: Inquiry[]; isFounder?: boolean }) {
     const [inquiries, setInquiries] = useState<Inquiry[]>(initialInquiries);
     const [selectedInquiry, setSelectedInquiry] = useState<Inquiry | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
@@ -83,6 +83,7 @@ export function InquiriesTable({ inquiries: initialInquiries }: { inquiries: Inq
                 onClose={() => setSelectedInquiry(null)}
                 onStatusChange={handleStatusChange}
                 onDelete={handleDelete}
+                isFounder={isFounder}
             />
 
             <div>

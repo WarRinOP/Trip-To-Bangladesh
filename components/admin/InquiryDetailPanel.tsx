@@ -2,8 +2,10 @@
 
 import { useEffect, useCallback, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, MessageCircle, Mail, Check, CheckCheck, Trash2 } from 'lucide-react';
+import { X, MessageCircle, Mail, Check, CheckCheck, Trash2, Send } from 'lucide-react';
 import { updateInquiryStatusDirect, deleteInquiry } from '@/app/actions/admin.actions';
+import { requestDeleteInquiry } from '@/app/actions/activity.actions';
+
 
 
 interface Inquiry {
@@ -45,7 +47,9 @@ interface Props {
     onClose: () => void;
     onStatusChange: (id: string, status: string) => void;
     onDelete: (id: string) => void;
+    isFounder?: boolean;
 }
+
 
 
 const STATUS_STYLES: Record<string, string> = {
@@ -101,18 +105,22 @@ function Toast({ message, visible }: { message: string; visible: boolean }) {
     );
 }
 
-export function InquiryDetailPanel({ inquiry, onClose, onStatusChange, onDelete }: Props) {
+export function InquiryDetailPanel({ inquiry, onClose, onStatusChange, onDelete, isFounder = false }: Props) {
     const [localStatus, setLocalStatus] = useState(inquiry?.status ?? 'pending');
     const [marking, setMarking] = useState(false);
     const [toast, setToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState('Marked as contacted ✓');
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [deleting, setDeleting] = useState(false);
+    const [requestSent, setRequestSent] = useState(false);
 
 
-    // Sync status when a new inquiry is selected, reset confirm
+
+    // Sync status and reset confirm/request state when new inquiry selected
     useEffect(() => {
         setLocalStatus(inquiry?.status ?? 'pending');
         setConfirmDelete(false);
+        setRequestSent(false);
     }, [inquiry?.id, inquiry?.status]);
 
 
@@ -154,20 +162,34 @@ export function InquiryDetailPanel({ inquiry, onClose, onStatusChange, onDelete 
     }
 
     async function handleMarkContacted() {
-
         if (!inquiry || localStatus === 'contacted' || marking) return;
         setMarking(true);
-        setLocalStatus('contacted'); // optimistic
+        setLocalStatus('contacted');
         onStatusChange(inquiry.id, 'contacted');
         const result = await updateInquiryStatusDirect(inquiry.id, 'contacted');
         setMarking(false);
         if (result.success) {
+            setToastMessage('Marked as contacted ✓');
             setToast(true);
             setTimeout(() => setToast(false), 2500);
         } else {
-            // Revert on failure
             setLocalStatus(inquiry.status);
             onStatusChange(inquiry.id, inquiry.status);
+        }
+    }
+
+    // Non-founder: request deletion via activity approval workflow
+    async function handleRequestDelete() {
+        if (!inquiry || requestSent || deleting) return;
+        setDeleting(true);
+        const description = `${inquiry.name} (${inquiry.email})`;
+        const result = await requestDeleteInquiry(inquiry.id, description);
+        setDeleting(false);
+        if (result.success) {
+            setRequestSent(true);
+            setToastMessage('Delete request sent to founder ✓');
+            setToast(true);
+            setTimeout(() => setToast(false), 3000);
         }
     }
 
@@ -185,7 +207,8 @@ export function InquiryDetailPanel({ inquiry, onClose, onStatusChange, onDelete 
 
     return (
         <>
-            <Toast message="Marked as contacted ✓" visible={toast} />
+            <Toast message={toastMessage} visible={toast} />
+
 
             <AnimatePresence>
                 {inquiry && (
@@ -393,20 +416,39 @@ export function InquiryDetailPanel({ inquiry, onClose, onStatusChange, onDelete 
                                         {localStatus === 'contacted' ? 'Contacted' : 'Mark Contacted'}
                                     </button>
 
-                                    {/* Delete */}
-                                    <button
-                                        onClick={handleDelete}
-                                        disabled={deleting}
-                                        className={`flex items-center gap-1.5 px-3 py-2.5 text-sm border transition-all duration-200 disabled:cursor-not-allowed ${
-                                            confirmDelete
-                                                ? 'border-red-500/60 bg-red-500/10 text-red-400 animate-pulse'
-                                                : 'border-white/10 text-[#a89f8c] hover:border-red-500/40 hover:text-red-400'
-                                        }`}
-                                        title="Delete inquiry"
-                                    >
-                                        <Trash2 className="w-4 h-4" />
-                                        {deleting ? 'Deleting…' : confirmDelete ? 'Confirm Delete?' : ''}
-                                    </button>
+                                    {/* Delete — founder: direct | non-founder: request */}
+                                    {isFounder ? (
+                                        <button
+                                            onClick={handleDelete}
+                                            disabled={deleting}
+                                            className={`flex items-center gap-1.5 px-3 py-2.5 text-sm border transition-all duration-200 disabled:cursor-not-allowed ${
+                                                confirmDelete
+                                                    ? 'border-red-500/60 bg-red-500/10 text-red-400 animate-pulse'
+                                                    : 'border-white/10 text-[#a89f8c] hover:border-red-500/40 hover:text-red-400'
+                                            }`}
+                                            title="Delete inquiry"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                            {deleting ? 'Deleting…' : confirmDelete ? 'Confirm Delete?' : ''}
+                                        </button>
+                                    ) : (
+                                        <button
+                                            onClick={handleRequestDelete}
+                                            disabled={deleting || requestSent}
+                                            className={`flex items-center gap-1.5 px-3 py-2.5 text-sm border transition-all duration-200 disabled:cursor-not-allowed ${
+                                                requestSent
+                                                    ? 'border-green-500/30 text-green-400/60 bg-green-500/5 cursor-not-allowed'
+                                                    : 'border-white/10 text-[#a89f8c] hover:border-red-500/40 hover:text-red-400'
+                                            }`}
+                                            title="Request deletion (requires founder approval)"
+                                        >
+                                            {requestSent ? (
+                                                <><CheckCheck className="w-4 h-4" /> Requested</>  
+                                            ) : (
+                                                <><Send className="w-4 h-4" /> {deleting ? 'Sending…' : 'Request Delete'}</>
+                                            )}
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         </motion.aside>
