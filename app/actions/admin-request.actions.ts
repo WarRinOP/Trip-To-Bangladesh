@@ -105,10 +105,12 @@ export async function approveAdminRequest(formData: FormData) {
 
     const { requestId, email, name } = parsed.data;
 
-    // 1. Create user in Supabase Auth with a random temp password
-    //    They will reset it via the invite email
+    // 1. Invite user — redirectTo MUST point to /auth/callback
+    //    Without this, Supabase defaults to Site URL (homepage) and the code is lost
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://trip-to-bangladesh.vercel.app';
     const { data: newUser, error: createError } = await admin.auth.admin.inviteUserByEmail(email, {
         data: { full_name: name },
+        redirectTo: `${siteUrl}/auth/callback`,
     });
 
     if (createError) {
