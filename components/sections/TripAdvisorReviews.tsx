@@ -166,7 +166,7 @@ export function TripAdvisorReviews() {
                 <ScrollReveal>
                     {/* TODO: Replace # with actual TripAdvisor listing URL */}
                     <a
-                        href="#"
+                        href="https://www.tripadvisor.com/Attraction_Review-g293936-d7217166-Reviews-Trip_To_Bangladesh_Day_Tours-Dhaka_City_Dhaka_Division.html"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 mb-14 group"
@@ -383,7 +383,7 @@ export function TripAdvisorReviews() {
                         </p>
                         {/* TODO: Replace # with actual TripAdvisor listing URL */}
                         <a
-                            href="#"
+                            href="https://www.tripadvisor.com/Attraction_Review-g293936-d7217166-Reviews-Trip_To_Bangladesh_Day_Tours-Dhaka_City_Dhaka_Division.html"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-2 px-8 py-3 border border-accent-gold/50 text-accent-gold text-sm font-medium hover:bg-accent-gold hover:text-background-primary hover:border-accent-gold transition-all duration-300 hover:shadow-[0_0_24px_rgba(201,168,76,0.3)]"
