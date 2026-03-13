@@ -27,7 +27,8 @@ interface AvailabilityCalendarProps {
 
 // ─── Day labels ───────────────────────────────────────────────────────────────
 
-const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+// Su=0 Mon-based grid: Sun is last column (index 6)
+const DAY_LABELS = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 
 // ─── DayCell component ────────────────────────────────────────────────────────
 
@@ -63,31 +64,28 @@ function DayCell({
     const reason = blocked[dateStr];
     const dayNum = Number(dateStr.split('-')[2]);
 
-    // Determine state
-    let bg = 'transparent';
-    let color = '#f5f0e8';
-    let cursor = 'pointer';
-    let fontWeight: number | string = 400;
-    let border = 'none';
-    let opacity = 1;
-    let pointerEvents: React.CSSProperties['pointerEvents'] = 'auto';
+    // ─── outer button: transparent, fixed size ──────────────────────────────
+    // Selected state is rendered as a CIRCLE inside, not as the button bg
+    // to prevent overflow onto neighbouring cells.
+
+    let outerBg = 'transparent';
+    let outerBorder = 'none';
+    let outerOpacity = 1;
+    let outerPointerEvents: React.CSSProperties['pointerEvents'] = 'auto';
+    let outerCursor = 'pointer';
+    let outerColor = '#f5f0e8';
 
     if (isPast) {
-        opacity = 0.25;
-        cursor = 'not-allowed';
-        pointerEvents = 'none';
-    } else if (isSelected) {
-        bg = '#c9a84c';
-        color = '#0a0f1a';
-        fontWeight = 600;
-        cursor = 'pointer';
+        outerOpacity = 0.25;
+        outerCursor = 'not-allowed';
+        outerPointerEvents = 'none';
     } else if (isBlocked) {
-        bg = 'rgba(201,76,76,0.08)';
-        color = '#555';
-        cursor = isAdmin ? 'pointer' : 'not-allowed';
-    } else if (isToday) {
-        border = '1px solid rgba(201,168,76,0.5)';
-        color = '#c9a84c';
+        outerBg = 'rgba(201,76,76,0.08)';
+        outerColor = '#555';
+        outerCursor = isAdmin ? 'pointer' : 'not-allowed';
+    } else if (isToday && !isSelected) {
+        outerBorder = '1px solid rgba(201,168,76,0.5)';
+        outerColor = '#c9a84c';
     }
 
     const tooltipText = isBlocked ? (reason ?? 'Unavailable') : undefined;
@@ -111,25 +109,51 @@ function DayCell({
         <button
             type="button"
             onClick={handleClick}
-            aria-label={`${formatDateDisplay(dateStr)}${isBlocked ? ` — Unavailable${reason ? ': ' + reason : ''}` : isSelected ? ' — Selected' : ' — Available'}`}
+            aria-label={`${formatDateDisplay(dateStr)}${
+                isBlocked
+                    ? ` — Unavailable${reason ? ': ' + reason : ''}`
+                    : isSelected
+                    ? ' — Selected'
+                    : ' — Available'
+            }`}
             aria-disabled={isPast || (isBlocked && !isAdmin)}
             data-tooltip={tooltipText}
-            className="group relative flex items-center justify-center select-none transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-accent-gold/60"
+            className="group relative flex items-center justify-center select-none transition-all duration-200 focus:outline-none"
             style={{
-                minWidth: 40,
-                minHeight: 40,
-                background: bg,
-                color,
-                cursor,
-                fontWeight,
-                border,
-                opacity,
-                pointerEvents,
+                width: 40,
+                height: 40,
+                background: outerBg,
+                color: isSelected ? '#0a0f1a' : outerColor,
+                cursor: outerCursor,
+                fontWeight: isSelected ? 600 : 400,
+                border: outerBorder,
+                opacity: outerOpacity,
+                pointerEvents: outerPointerEvents,
                 fontFamily: 'Inter, sans-serif',
                 fontSize: 13,
+                position: 'relative',
             }}
         >
-            {dayNum}
+            {/* Selected circle — 36×36, centered, never overflows */}
+            {isSelected && (
+                <span
+                    aria-hidden="true"
+                    style={{
+                        position: 'absolute',
+                        width: 36,
+                        height: 36,
+                        borderRadius: '50%',
+                        background: '#c9a84c',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        zIndex: 0,
+                    }}
+                />
+            )}
+
+            {/* Day number — sits above circle */}
+            <span style={{ position: 'relative', zIndex: 1 }}>{dayNum}</span>
 
             {/* Diagonal strikethrough for blocked dates */}
             {isBlocked && (
@@ -144,6 +168,7 @@ function DayCell({
                         background: 'rgba(201,76,76,0.4)',
                         transform: 'rotate(-45deg)',
                         pointerEvents: 'none',
+                        zIndex: 2,
                     }}
                 />
             )}
@@ -153,7 +178,7 @@ function DayCell({
                 <span
                     aria-hidden="true"
                     className="absolute top-0.5 right-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
-                    style={{ color: '#c9a84c' }}
+                    style={{ color: '#c9a84c', zIndex: 2 }}
                 >
                     <Pencil size={8} />
                 </span>
@@ -233,20 +258,22 @@ function MonthGrid({
 
             {/* Day headers */}
             <div
-                className="grid grid-cols-7 gap-1 mb-2 pb-2"
-                style={{ borderBottom: '1px solid rgba(201,168,76,0.1)' }}
+                className="grid grid-cols-7 mb-2 pb-2"
+                style={{
+                    borderBottom: '1px solid rgba(201,168,76,0.08)',
+                    columnGap: 4,
+                }}
                 role="row"
             >
                 {DAY_LABELS.map((d) => (
                     <div
                         key={d}
-                        className="text-center"
+                        className="text-center px-1"
                         style={{
                             fontFamily: 'JetBrains Mono, monospace',
-                            fontSize: 10,
-                            color: '#a89f8c',
-                            letterSpacing: '2px',
-                            textTransform: 'uppercase',
+                            fontSize: 11,
+                            color: 'rgba(201,168,76,0.5)',
+                            letterSpacing: 0,
                         }}
                         role="columnheader"
                         aria-label={d}
@@ -451,19 +478,21 @@ export function AvailabilityCalendar({
                 <div>
                     {/* Day labels */}
                     <div
-                        className="grid grid-cols-7 gap-1 mb-2 pb-2"
-                        style={{ borderBottom: '1px solid rgba(201,168,76,0.1)' }}
+                        className="grid grid-cols-7 mb-2 pb-2"
+                        style={{
+                            borderBottom: '1px solid rgba(201,168,76,0.08)',
+                            columnGap: 4,
+                        }}
                     >
                         {DAY_LABELS.map((d) => (
                             <div
                                 key={d}
-                                className="text-center"
+                                className="text-center px-1"
                                 style={{
                                     fontFamily: 'JetBrains Mono, monospace',
-                                    fontSize: 10,
-                                    color: '#a89f8c',
-                                    letterSpacing: '2px',
-                                    textTransform: 'uppercase',
+                                    fontSize: 11,
+                                    color: 'rgba(201,168,76,0.5)',
+                                    letterSpacing: 0,
                                 }}
                             >
                                 {d}
