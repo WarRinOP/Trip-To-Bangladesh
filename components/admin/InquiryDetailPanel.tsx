@@ -12,11 +12,31 @@ interface Inquiry {
     email: string;
     phone: string | null;
     tour_id: string | null;
+    tour_interest: string | null;
     travel_date: string | null;
+    country: string | null;
     guests: number | null;
     message: string | null;
     status: string;
     is_read: boolean;
+}
+
+// Parse old inquiries that stored data in the message blob
+function parseLegacyMessage(msg: string | null) {
+    if (!msg) return { tourInterest: null, travelDate: null, country: null, notes: null };
+    const lines = msg.split('\n');
+    const extract = (prefix: string) =>
+        lines.find(l => l.startsWith(prefix))?.replace(prefix, '').trim() ?? null;
+    const knownPrefixes = ['Tour Interest: ', 'Travel Dates: ', 'Country: '];
+    const notes = lines
+        .filter(l => !knownPrefixes.some(p => l.startsWith(p)) && l.trim())
+        .join('\n') || null;
+    return {
+        tourInterest: extract('Tour Interest: '),
+        travelDate: extract('Travel Dates: '),
+        country: extract('Country: '),
+        notes,
+    };
 }
 
 interface Props {
@@ -227,69 +247,85 @@ export function InquiryDetailPanel({ inquiry, onClose, onStatusChange }: Props) 
                             <div className="flex-1 overflow-y-auto">
                                 {/* Details grid */}
                                 <div className="px-6 py-5 space-y-0">
-                                    <DetailRow label="Tour Interest" value={inquiry.tour_id ?? '—'} />
-                                    <DetailRow
-                                        label="Travel Dates"
-                                        value={
-                                            inquiry.travel_date
-                                                ? new Date(inquiry.travel_date).toLocaleDateString('en-GB', {
-                                                    day: 'numeric', month: 'long', year: 'numeric',
-                                                })
+                                    {(() => {
+                                        // If new-style fields are empty, fall back to parsing old message blob
+                                        const legacy = parseLegacyMessage(
+                                            !inquiry.tour_interest && !inquiry.travel_date && !inquiry.country
+                                                ? inquiry.message
                                                 : null
-                                        }
-                                    />
-                                    <DetailRow
-                                        label="Group Size"
-                                        value={inquiry.guests ? `${inquiry.guests} guest${inquiry.guests !== 1 ? 's' : ''}` : null}
-                                    />
-                                    <DetailRow
-                                        label="Phone"
-                                        value={
-                                            inquiry.phone ? (
-                                                <a
-                                                    href={`tel:${inquiry.phone}`}
-                                                    className="text-accent-gold hover:underline"
-                                                >
-                                                    {inquiry.phone}
-                                                </a>
-                                            ) : null
-                                        }
-                                    />
-                                    <DetailRow
-                                        label="Email"
-                                        value={
-                                            <a
-                                                href={`mailto:${inquiry.email}`}
-                                                className="text-accent-gold hover:underline break-all"
-                                            >
-                                                {inquiry.email}
-                                            </a>
-                                        }
-                                    />
-                                </div>
-
-                                {/* Message */}
-                                <div className="px-6 pb-6">
-                                    <p
-                                        className="text-accent-gold uppercase tracking-[2px] mb-2"
-                                        style={{ fontFamily: 'monospace', fontSize: '9px' }}
-                                    >
-                                        MESSAGE
-                                    </p>
-                                    <div
-                                        className="text-[14px] text-[#a89f8c] leading-[1.7] px-4 py-4"
-                                        style={{
-                                            background: 'rgba(201,168,76,0.03)',
-                                            border: '1px solid rgba(201,168,76,0.08)',
-                                            borderLeft: '3px solid rgba(201,168,76,0.3)',
-                                        }}
-                                    >
-                                        {inquiry.message ? (
-                                            <span className="whitespace-pre-wrap">{inquiry.message}</span>
-                                        ) : (
-                                            <span className="italic text-[#a89f8c]/60">No message provided</span>
-                                        )}
-                                    </div>
+                                        );
+                                        const tourInterest = inquiry.tour_interest ?? legacy.tourInterest;
+                                        const travelDate = inquiry.travel_date ?? legacy.travelDate;
+                                        const country = inquiry.country ?? legacy.country;
+                                        const specialNotes = inquiry.tour_interest
+                                            ? inquiry.message  // new-style: message = special requirements only
+                                            : legacy.notes;    // old-style: parsed remainder
+                                        return (
+                                            <>
+                                                <DetailRow label="Tour Interest" value={tourInterest} />
+                                                <DetailRow label="Travel Dates" value={travelDate} />
+                                                <DetailRow label="Country" value={country} />
+                                                <DetailRow
+                                                    label="Group Size"
+                                                    value={inquiry.guests ? `${inquiry.guests} guest${inquiry.guests !== 1 ? 's' : ''}` : null}
+                                                />
+                                                <DetailRow
+                                                    label="Phone"
+                                                    value={
+                                                        inquiry.phone ? (
+                                                            <a href={`tel:${inquiry.phone}`} className="text-accent-gold hover:underline">
+                                                                {inquiry.phone}
+                                                            </a>
+                                                        ) : null
+                                                    }
+                                                />
+                                                <DetailRow
+                                                    label="Email"
+                                                    value={
+                                                        <a href={`mailto:${inquiry.email}`} className="text-accent-gold hover:underline break-all">
+                                                            {inquiry.email}
+                                                        </a>
+                                                    }
+                                                />
+                                                {/* Special requirements / notes */}
+                                                {specialNotes && (
+                                                    <div className="pt-2">
+                                                        <p className="text-accent-gold uppercase tracking-[2px] mb-2" style={{ fontFamily: 'monospace', fontSize: '9px' }}>
+                                                            SPECIAL REQUIREMENTS
+                                                        </p>
+                                                        <div
+                                                            className="text-[14px] text-[#a89f8c] leading-[1.7] px-4 py-4"
+                                                            style={{
+                                                                background: 'rgba(201,168,76,0.03)',
+                                                                border: '1px solid rgba(201,168,76,0.08)',
+                                                                borderLeft: '3px solid rgba(201,168,76,0.3)',
+                                                            }}
+                                                        >
+                                                            <span className="whitespace-pre-wrap">{specialNotes}</span>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                {/* Legacy full message fallback (when no notes parsed) */}
+                                                {!specialNotes && !inquiry.tour_interest && inquiry.message && (
+                                                    <div className="pt-2">
+                                                        <p className="text-accent-gold uppercase tracking-[2px] mb-2" style={{ fontFamily: 'monospace', fontSize: '9px' }}>
+                                                            RAW MESSAGE
+                                                        </p>
+                                                        <div
+                                                            className="text-[14px] text-[#a89f8c] leading-[1.7] px-4 py-4"
+                                                            style={{
+                                                                background: 'rgba(201,168,76,0.03)',
+                                                                border: '1px solid rgba(201,168,76,0.08)',
+                                                                borderLeft: '3px solid rgba(201,168,76,0.3)',
+                                                            }}
+                                                        >
+                                                            <span className="whitespace-pre-wrap">{inquiry.message}</span>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </>
+                                        );
+                                    })()}
                                 </div>
                             </div>
 

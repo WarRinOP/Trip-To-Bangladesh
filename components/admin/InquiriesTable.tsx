@@ -14,7 +14,9 @@ interface Inquiry {
     email: string;
     phone: string | null;
     tour_id: string | null;
+    tour_interest: string | null;
     travel_date: string | null;
+    country: string | null;
     guests: number | null;
     message: string | null;
     status: string;

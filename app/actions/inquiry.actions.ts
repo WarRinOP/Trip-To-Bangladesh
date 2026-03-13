@@ -91,18 +91,16 @@ export async function submitInquiry(
   // 3. Insert into Supabase using SERVICE ROLE (server only, bypasses RLS)
   const supabase = createAdminClient();
   const { error: dbError } = await supabase.from('inquiries').insert({
-    // Map to actual column names in the Supabase inquiries table
-    name: data.full_name,          // column is 'name'
+    name: data.full_name,
     email: data.email,
     phone: data.phone || null,
-    message: [
-      data.tour_interest ? `Tour Interest: ${data.tour_interest}` : '',
-      data.travel_dates ? `Travel Dates: ${data.travel_dates}` : '',
-      data.country ? `Country: ${data.country}` : '',
-      data.special_requirements || '',
-    ].filter(Boolean).join('\n'),
-    guests: data.group_size,       // column is 'guests'
+    country: data.country,
+    tour_interest: data.tour_interest,
+    travel_date: data.travel_dates,   // stores as text — readable in panel
+    guests: data.group_size,
+    message: data.special_requirements || null,
     status: 'pending',
+    is_read: false,
   });
 
   if (dbError) {
