@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Search } from 'lucide-react';
 import { InquiryDetailPanel } from './InquiryDetailPanel';
+import { markInquiryAsRead } from '@/app/actions/admin.actions';
 
 
 
@@ -17,6 +18,7 @@ interface Inquiry {
     guests: number | null;
     message: string | null;
     status: string;
+    is_read: boolean;
 }
 
 const statusBadge: Record<string, string> = {
@@ -54,6 +56,19 @@ export function InquiriesTable({ inquiries: initialInquiries }: { inquiries: Inq
         setSelectedInquiry((prev) =>
             prev?.id === id ? { ...prev, status } : prev
         );
+    }
+
+    // Optimistic mark-read + open panel
+    function handleRowClick(inq: Inquiry) {
+        if (!inq.is_read) {
+            // Optimistically clear the badge immediately
+            setInquiries((prev) =>
+                prev.map((i) => (i.id === inq.id ? { ...i, is_read: true } : i))
+            );
+            // Fire-and-forget — revalidatePath in the action will update sidebar on next load
+            markInquiryAsRead(inq.id);
+        }
+        setSelectedInquiry(inq);
     }
 
     return (
@@ -101,7 +116,7 @@ export function InquiriesTable({ inquiries: initialInquiries }: { inquiries: Inq
                                             <>
                                                 <tr
                                                     key={inq.id}
-                                                    onClick={() => setSelectedInquiry(inq)}
+                                                    onClick={() => handleRowClick(inq)}
                                                     className="border-b border-accent-gold/5 transition-colors cursor-pointer group"
                                                     style={{
                                                         background: isSelected
@@ -123,7 +138,14 @@ export function InquiriesTable({ inquiries: initialInquiries }: { inquiries: Inq
                                                     }}
                                                 >
                                                     <td className="p-4 text-text-muted">{formatDate(inq.created_at)}</td>
-                                                    <td className="p-4 text-text-primary font-medium">{inq.name}</td>
+                                                    <td className="p-4 text-text-primary font-medium">
+                                                        {inq.name}
+                                                        {!inq.is_read && (
+                                                            <span className="ml-2 inline-flex items-center px-1.5 py-0.5 text-[9px] font-bold tracking-wider uppercase bg-red-500 text-white rounded-sm">
+                                                                NEW
+                                                            </span>
+                                                        )}
+                                                    </td>
                                                     <td className="p-4 text-text-muted hidden md:table-cell">{inq.email}</td>
                                                     <td className="p-4 text-text-muted hidden lg:table-cell">
                                                         {inq.travel_date ?? '—'}

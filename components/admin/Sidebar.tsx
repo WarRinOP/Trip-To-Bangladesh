@@ -1,5 +1,7 @@
 'use client';
 
+import { AnimatePresence, motion } from 'framer-motion';
+
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -33,9 +35,10 @@ interface SidebarProps {
   userEmail?: string;
   isFounder?: boolean;
   pendingRequestCount?: number;
+  unreadInquiryCount?: number;
 }
 
-export function Sidebar({ userEmail, isFounder = false, pendingRequestCount = 0 }: SidebarProps) {
+export function Sidebar({ userEmail, isFounder = false, pendingRequestCount = 0, unreadInquiryCount = 0 }: SidebarProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -116,7 +119,24 @@ export function Sidebar({ userEmail, isFounder = false, pendingRequestCount = 0 
               )}
             >
               <Icon className="w-4 h-4 shrink-0" />
-              {label}
+              <span className="flex-1">{label}</span>
+              {/* Unread badge — Inquiries only */}
+              {href === '/admin/inquiries' && (
+                <AnimatePresence>
+                  {unreadInquiryCount > 0 && (
+                    <motion.span
+                      key="unread-badge"
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0, opacity: 0 }}
+                      transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                      className="ml-auto min-w-[18px] h-[18px] flex items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold px-1"
+                    >
+                      {unreadInquiryCount}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              )}
             </Link>
           ))}
 

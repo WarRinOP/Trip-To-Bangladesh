@@ -16,6 +16,7 @@ interface Inquiry {
     guests: number | null;
     message: string | null;
     status: string;
+    is_read: boolean;
 }
 
 interface Props {

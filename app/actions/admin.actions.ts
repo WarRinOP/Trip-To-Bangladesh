@@ -62,6 +62,17 @@ export async function updateInquiryStatusDirect(
   return { success: true };
 }
 
+// ─── Mark inquiry as read ─────────────────────────────
+export async function markInquiryAsRead(id: string): Promise<void> {
+  const supabase = createAdminClient();
+  await supabase
+    .from('inquiries')
+    .update({ is_read: true })
+    .eq('id', id);
+  revalidatePath('/admin/inquiries');
+  revalidatePath('/admin');
+}
+
 // ─── Update tour active/featured ────────────────────────
 const tourStatusSchema = z.object({
   id: z.string().uuid(),

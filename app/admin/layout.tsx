@@ -19,16 +19,24 @@ export default async function AdminLayout({
 
   const isFounder = user.email === FOUNDER_EMAIL;
 
+  const admin = createAdminClient();
+
   // Fetch pending request count (founder only — skip for others to save a DB call)
   let pendingRequestCount = 0;
   if (isFounder) {
-    const admin = createAdminClient();
     const { count } = await admin
       .from('admin_requests')
       .select('id', { count: 'exact', head: true })
       .eq('status', 'pending');
     pendingRequestCount = count ?? 0;
   }
+
+  // Fetch unread inquiry count (all admins)
+  const { count: unreadCount } = await admin
+    .from('inquiries')
+    .select('id', { count: 'exact', head: true })
+    .eq('is_read', false);
+  const unreadInquiryCount = unreadCount ?? 0;
 
   return (
     // Full-screen container — no global Header/Footer here
@@ -38,6 +46,7 @@ export default async function AdminLayout({
         userEmail={user.email}
         isFounder={isFounder}
         pendingRequestCount={pendingRequestCount}
+        unreadInquiryCount={unreadInquiryCount}
       />
 
       {/* Main content — pushed right by sidebar width on desktop */}
