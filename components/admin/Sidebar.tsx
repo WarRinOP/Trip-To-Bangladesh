@@ -14,6 +14,7 @@ import {
   CalendarDays,
   ExternalLink,
   UserPlus,
+  Users2,
 } from 'lucide-react';
 import { logoutAdmin } from '@/app/actions/admin.actions';
 import { useState } from 'react';
@@ -138,6 +139,23 @@ export function Sidebar({ userEmail, isFounder = false, pendingRequestCount = 0 
                   {pendingRequestCount}
                 </span>
               )}
+            </Link>
+          )}
+
+          {/* Team — founder only */}
+          {isFounder && (
+            <Link
+              href="/admin/team"
+              onClick={() => setMobileOpen(false)}
+              className={cn(
+                'flex items-center gap-3 px-3 py-2.5 text-sm rounded transition-all duration-150',
+                isActive('/admin/team')
+                  ? 'bg-accent-gold/10 text-accent-gold border-l-2 border-accent-gold pl-[10px]'
+                  : 'text-text-muted hover:text-text-primary hover:bg-white/5 border-l-2 border-transparent pl-[10px]'
+              )}
+            >
+              <Users2 className="w-4 h-4 shrink-0" />
+              Team
             </Link>
           )}
         </nav>
