@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/Badge';
 import { TourInquiryForm } from '@/components/sections/TourInquiryForm';
 import { AIPlannerNudge } from '@/components/ui/AIPlannerNudge';
 import { Check, Clock, Users, DollarSign, MapPin } from 'lucide-react';
+import { AvailabilitySection } from '@/components/sections/AvailabilitySection';
 
 // Tours with static fallback data — destinations exist regardless of DB state
 const STATIC_TOURS: Record<string, {
@@ -286,6 +287,29 @@ export default async function TourPage({ params }: { params: { slug: string } })
                                     </li>
                                 ))}
                             </ul>
+                        </ScrollReveal>
+
+                        {/* Check Availability */}
+                        <ScrollReveal>
+                            <div className="space-y-4">
+                                <p
+                                    className="uppercase tracking-[4px]"
+                                    style={{
+                                        fontFamily: 'JetBrains Mono, monospace',
+                                        fontSize: 11,
+                                        color: '#a89f8c',
+                                    }}
+                                >
+                                    PLAN YOUR TRIP
+                                </p>
+                                <h2 className="font-serif text-3xl text-accent-gold">
+                                    Check Availability
+                                </h2>
+                                <p className="text-text-muted text-sm">
+                                    Select your preferred start date. Dates shown in red are unavailable.
+                                </p>
+                                <AvailabilitySection tourSlug={params.slug} />
+                            </div>
                         </ScrollReveal>
 
                         {/* Itinerary */}

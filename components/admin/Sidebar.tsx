@@ -11,6 +11,7 @@ import {
   Menu,
   X,
   Settings,
+  CalendarDays,
 } from 'lucide-react';
 import { logoutAdmin } from '@/app/actions/admin.actions';
 import { useState } from 'react';
@@ -20,6 +21,7 @@ const NAV_ITEMS = [
   { label: 'Overview', href: '/admin', icon: LayoutDashboard },
   { label: 'Inquiries', href: '/admin/inquiries', icon: Inbox },
   { label: 'Tours', href: '/admin/tours', icon: Map },
+  { label: 'Availability', href: '/admin/availability', icon: CalendarDays },
   { label: 'Blog', href: '/admin/blog', icon: BookOpen },
   { label: 'Settings', href: '/admin/settings', icon: Settings },
 ];

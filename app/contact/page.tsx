@@ -18,8 +18,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ContactPage() {
+export default function ContactPage({
+  searchParams,
+}: {
+  searchParams: { date?: string; tour?: string };
+}) {
   const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '';
+  const initialDate = searchParams.date ?? undefined;
+  const initialTour = searchParams.tour ?? undefined;
 
   return (
     <div className="w-full">
@@ -60,7 +66,7 @@ export default function ContactPage() {
                   <p className="text-text-muted mb-8">
                     Fill out the form below and we&apos;ll respond within 24 hours with a personalised itinerary and pricing.
                   </p>
-                  <ContactInquiryForm />
+                  <ContactInquiryForm initialDate={initialDate} initialTour={initialTour} />
                 </div>
               </ScrollReveal>
             </div>
