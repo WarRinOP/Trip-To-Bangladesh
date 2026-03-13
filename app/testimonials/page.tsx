@@ -263,7 +263,7 @@ export default function TestimonialsPage() {
             {/* Trust badge row */}
             {/* TODO: Replace # with actual TripAdvisor listing URL */}
             <a
-              href="#"
+              href="https://www.tripadvisor.com/Attraction_Review-g293936-d7217166-Reviews-Trip_To_Bangladesh_Day_Tours-Dhaka_City_Dhaka_Division.html"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex flex-wrap items-center justify-center gap-x-5 gap-y-2 group"
@@ -484,6 +484,21 @@ export default function TestimonialsPage() {
             </div>
           </ScrollReveal>
 
+          {/* Read All Reviews CTA — between hero card and grid */}
+          <ScrollReveal>
+            <div className="flex justify-center py-8">
+              <a
+                href="https://www.tripadvisor.com/Attraction_Review-g293936-d7217166-Reviews-Trip_To_Bangladesh_Day_Tours-Dhaka_City_Dhaka_Division.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-8 py-4 border border-accent-gold/50 text-accent-gold text-sm font-medium hover:bg-accent-gold hover:text-[#0a0f1a] hover:border-accent-gold transition-all duration-300 hover:shadow-[0_0_24px_rgba(201,168,76,0.3)]"
+              >
+                Read All 102 Reviews on{' '}
+                <span className="text-[#00aa6c] font-semibold">TripAdvisor</span> →
+              </a>
+            </div>
+          </ScrollReveal>
+
           {/* Reviews grid — 10 cards */}
           <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
             {GRID_REVIEWS.map((review, i) => (
@@ -622,16 +637,6 @@ export default function TestimonialsPage() {
                   Start Planning My Trip →
                 </motion.button>
               </Link>
-
-              {/* TODO: Replace # with actual TripAdvisor listing URL */}
-              <a
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-8 py-4 border border-accent-gold/50 text-accent-gold text-sm font-medium hover:bg-accent-gold hover:text-[#0a0f1a] transition-all duration-300"
-              >
-                Read All 102 Reviews on TripAdvisor →
-              </a>
             </div>
 
             {/* WhatsApp */}
