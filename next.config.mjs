@@ -17,7 +17,9 @@ const cspHeader = `
         https://api.open-meteo.com
         https://*.supabase.co
         wss://*.supabase.co
-        https://api.anthropic.com;
+        https://api.anthropic.com
+        https://*.sanity.io
+        wss://*.sanity.io;
     upgrade-insecure-requests;
 `
 
@@ -28,6 +30,11 @@ const nextConfig = {
             {
                 protocol: 'https',
                 hostname: 'images.unsplash.com',
+                pathname: '**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'cdn.sanity.io',
                 pathname: '**',
             },
         ],
