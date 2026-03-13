@@ -47,15 +47,15 @@ export function Header() {
             >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-20">
-                        {/* Logo */}
-                        <Link href="/" className="flex-shrink-0 z-50">
-                            <span className="font-serif text-2xl font-bold text-accent-gold tracking-widest uppercase">
+                        {/* Logo — pushed hard left with mr-auto */}
+                        <Link href="/" className="flex-shrink-0 z-50 mr-auto">
+                            <span className="font-serif text-lg font-bold text-accent-gold tracking-widest uppercase">
                                 Trip to Bangladesh
                             </span>
                         </Link>
 
                         {/* Desktop Navigation */}
-                        <nav className="hidden md:flex items-center space-x-8">
+                        <nav className="hidden md:flex items-center gap-x-5 whitespace-nowrap">
                             {/* Home */}
                             {LINKS.slice(0, 1).map((link) => {
                                 const isActive = pathname === link.href;
@@ -63,7 +63,7 @@ export function Header() {
                                     <Link
                                         key={link.label}
                                         href={link.href}
-                                        className="relative group text-sm font-medium text-text-primary hover:text-accent-gold transition-colors focus:outline-none focus:text-accent-gold"
+                                        className="relative group text-[13px] font-medium text-text-primary hover:text-accent-gold transition-colors focus:outline-none focus:text-accent-gold"
                                     >
                                         {link.label}
                                         <motion.div
@@ -80,7 +80,7 @@ export function Header() {
                             {/* Why Us — desktop: opens modal */}
                             <button
                                 onClick={() => setIsWhyUsOpen(true)}
-                                className="relative group text-sm font-medium text-text-primary hover:text-accent-gold transition-colors focus:outline-none focus:text-accent-gold cursor-pointer"
+                                className="relative group text-[13px] font-medium text-text-primary hover:text-accent-gold transition-colors focus:outline-none focus:text-accent-gold cursor-pointer"
                                 aria-haspopup="dialog"
                                 aria-expanded={isWhyUsOpen}
                             >
@@ -101,7 +101,7 @@ export function Header() {
                                     <Link
                                         key={link.label}
                                         href={link.href}
-                                        className="relative group text-sm font-medium text-text-primary hover:text-accent-gold transition-colors focus:outline-none focus:text-accent-gold"
+                                        className="relative group text-[13px] font-medium text-text-primary hover:text-accent-gold transition-colors focus:outline-none focus:text-accent-gold"
                                     >
                                         {link.label}
                                         <motion.div
@@ -130,7 +130,7 @@ export function Header() {
 
                             <Link
                                 href="/contact"
-                                className="relative inline-flex items-center justify-center px-6 py-2 border border-accent-gold text-sm font-medium text-accent-gold overflow-hidden group focus:outline-none focus:ring-2 focus:ring-accent-gold focus:ring-offset-2 focus:ring-offset-background-primary"
+                                className="relative inline-flex items-center justify-center px-4 py-1.5 border border-accent-gold text-[13px] font-medium text-accent-gold overflow-hidden group focus:outline-none focus:ring-2 focus:ring-accent-gold focus:ring-offset-2 focus:ring-offset-background-primary"
                             >
                                 <span className="absolute inset-0 w-full h-full bg-accent-gold -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out z-0" />
                                 <span className="relative z-10 group-hover:text-background-primary transition-colors duration-300">
