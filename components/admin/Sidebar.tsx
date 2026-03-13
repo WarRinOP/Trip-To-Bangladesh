@@ -12,6 +12,7 @@ import {
   X,
   Settings,
   CalendarDays,
+  ExternalLink,
 } from 'lucide-react';
 import { logoutAdmin } from '@/app/actions/admin.actions';
 import { useState } from 'react';
@@ -75,6 +76,25 @@ export function Sidebar({ userEmail }: SidebarProps) {
           {userEmail && (
             <p className="text-text-muted text-xs mt-2 truncate opacity-60">{userEmail}</p>
           )}
+        </div>
+
+        {/* View Site button */}
+        <div className="px-3 pt-4 shrink-0">
+          <Link
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="View Site"
+            className="flex items-center justify-center gap-[6px] w-full px-3 py-2 rounded
+              border border-[rgba(201,168,76,0.25)] text-[#c9a84c]
+              text-[11px] uppercase tracking-[1px] font-[Inter]
+              transition-all duration-150 ease-in
+              hover:bg-[rgba(201,168,76,0.08)] hover:border-[rgba(201,168,76,0.5)]
+              mb-5"
+          >
+            <ExternalLink className="w-[14px] h-[14px] shrink-0" />
+            <span className="hidden lg:inline">View Site</span>
+          </Link>
         </div>
 
         {/* Navigation */}
