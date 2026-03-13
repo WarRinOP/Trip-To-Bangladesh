@@ -398,7 +398,7 @@ export default function TestimonialsPage() {
                   {[
                     { value: '60%+', label: 'Reviews Mention Ontu by Name' },
                     { value: '5★',   label: 'Average Tour Rating' },
-                    { value: '5+',   label: 'Years as Senior Guide' },
+                    { value: '15+',  label: 'Years as Senior Guide' },
                   ].map((s) => (
                     <div key={s.label} className="text-center">
                       <p className="font-serif text-4xl text-accent-gold mb-2">{s.value}</p>
