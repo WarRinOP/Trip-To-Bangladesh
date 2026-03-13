@@ -63,14 +63,17 @@ export function InquiriesTable({ inquiries: initialInquiries }: { inquiries: Inq
     // Optimistic mark-read + open panel
     function handleRowClick(inq: Inquiry) {
         if (!inq.is_read) {
-            // Optimistically clear the badge immediately
             setInquiries((prev) =>
                 prev.map((i) => (i.id === inq.id ? { ...i, is_read: true } : i))
             );
-            // Fire-and-forget — revalidatePath in the action will update sidebar on next load
             markInquiryAsRead(inq.id);
         }
         setSelectedInquiry(inq);
+    }
+
+    // Optimistic delete — remove row instantly
+    function handleDelete(id: string) {
+        setInquiries((prev) => prev.filter((inq) => inq.id !== id));
     }
 
     return (
@@ -79,6 +82,7 @@ export function InquiriesTable({ inquiries: initialInquiries }: { inquiries: Inq
                 inquiry={selectedInquiry}
                 onClose={() => setSelectedInquiry(null)}
                 onStatusChange={handleStatusChange}
+                onDelete={handleDelete}
             />
 
             <div>

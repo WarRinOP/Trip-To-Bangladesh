@@ -73,6 +73,29 @@ export async function markInquiryAsRead(id: string): Promise<void> {
   revalidatePath('/admin');
 }
 
+// ─── Delete inquiry ────────────────────────────────────
+export async function deleteInquiry(
+  id: string
+): Promise<{ success: boolean; error?: string }> {
+  const parsed = z.string().uuid().safeParse(id);
+  if (!parsed.success) return { success: false, error: 'Invalid inquiry ID' };
+
+  const supabase = createAdminClient();
+  const { error } = await supabase
+    .from('inquiries')
+    .delete()
+    .eq('id', parsed.data);
+
+  if (error) {
+    console.error('Delete inquiry error:', error.message);
+    return { success: false, error: error.message };
+  }
+
+  revalidatePath('/admin/inquiries');
+  revalidatePath('/admin');
+  return { success: true };
+}
+
 // ─── Update tour active/featured ────────────────────────
 const tourStatusSchema = z.object({
   id: z.string().uuid(),

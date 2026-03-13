@@ -2,8 +2,9 @@
 
 import { useEffect, useCallback, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, MessageCircle, Mail, Check, CheckCheck } from 'lucide-react';
-import { updateInquiryStatusDirect } from '@/app/actions/admin.actions';
+import { X, MessageCircle, Mail, Check, CheckCheck, Trash2 } from 'lucide-react';
+import { updateInquiryStatusDirect, deleteInquiry } from '@/app/actions/admin.actions';
+
 
 interface Inquiry {
     id: string;
@@ -43,7 +44,9 @@ interface Props {
     inquiry: Inquiry | null;
     onClose: () => void;
     onStatusChange: (id: string, status: string) => void;
+    onDelete: (id: string) => void;
 }
+
 
 const STATUS_STYLES: Record<string, string> = {
     pending: 'border-accent-gold/40 text-accent-gold bg-accent-gold/5',
@@ -98,15 +101,20 @@ function Toast({ message, visible }: { message: string; visible: boolean }) {
     );
 }
 
-export function InquiryDetailPanel({ inquiry, onClose, onStatusChange }: Props) {
+export function InquiryDetailPanel({ inquiry, onClose, onStatusChange, onDelete }: Props) {
     const [localStatus, setLocalStatus] = useState(inquiry?.status ?? 'pending');
     const [marking, setMarking] = useState(false);
     const [toast, setToast] = useState(false);
+    const [confirmDelete, setConfirmDelete] = useState(false);
+    const [deleting, setDeleting] = useState(false);
 
-    // Sync status when a new inquiry is selected
+
+    // Sync status when a new inquiry is selected, reset confirm
     useEffect(() => {
         setLocalStatus(inquiry?.status ?? 'pending');
+        setConfirmDelete(false);
     }, [inquiry?.id, inquiry?.status]);
+
 
     // Lock body scroll while open
     useEffect(() => {
@@ -128,7 +136,25 @@ export function InquiryDetailPanel({ inquiry, onClose, onStatusChange }: Props) 
         return () => document.removeEventListener('keydown', handleKeyDown);
     }, [handleKeyDown]);
 
+    async function handleDelete() {
+        if (!inquiry || deleting) return;
+        if (!confirmDelete) {
+            setConfirmDelete(true);
+            // Auto-reset confirm after 4s if user doesn't click again
+            setTimeout(() => setConfirmDelete(false), 4000);
+            return;
+        }
+        setDeleting(true);
+        const result = await deleteInquiry(inquiry.id);
+        setDeleting(false);
+        if (result.success) {
+            onDelete(inquiry.id);
+            onClose();
+        }
+    }
+
     async function handleMarkContacted() {
+
         if (!inquiry || localStatus === 'contacted' || marking) return;
         setMarking(true);
         setLocalStatus('contacted'); // optimistic
@@ -331,7 +357,7 @@ export function InquiryDetailPanel({ inquiry, onClose, onStatusChange }: Props) 
 
                             {/* ── Sticky Action Bar ── */}
                             <div
-                                className="shrink-0 px-6 py-5 border-t border-accent-gold/10 flex flex-wrap gap-3"
+                                className="shrink-0 px-6 py-5 border-t border-accent-gold/10 flex flex-wrap gap-3 items-center"
                                 style={{ background: '#0a0f1a' }}
                             >
                                 {/* WhatsApp */}
@@ -355,15 +381,33 @@ export function InquiryDetailPanel({ inquiry, onClose, onStatusChange }: Props) 
                                     Reply Email
                                 </a>
 
-                                {/* Mark Contacted */}
-                                <button
-                                    onClick={handleMarkContacted}
-                                    disabled={localStatus === 'contacted' || marking}
-                                    className="flex items-center gap-2 px-3 py-2.5 text-sm border border-white/10 text-[#a89f8c] hover:text-white hover:border-white/20 transition-colors disabled:opacity-40 disabled:cursor-not-allowed ml-auto"
-                                >
-                                    <Check className="w-4 h-4" />
-                                    {localStatus === 'contacted' ? 'Contacted' : 'Mark Contacted'}
-                                </button>
+                                {/* Right-side buttons */}
+                                <div className="flex items-center gap-2 ml-auto">
+                                    {/* Mark Contacted */}
+                                    <button
+                                        onClick={handleMarkContacted}
+                                        disabled={localStatus === 'contacted' || marking}
+                                        className="flex items-center gap-2 px-3 py-2.5 text-sm border border-white/10 text-[#a89f8c] hover:text-white hover:border-white/20 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                                    >
+                                        <Check className="w-4 h-4" />
+                                        {localStatus === 'contacted' ? 'Contacted' : 'Mark Contacted'}
+                                    </button>
+
+                                    {/* Delete */}
+                                    <button
+                                        onClick={handleDelete}
+                                        disabled={deleting}
+                                        className={`flex items-center gap-1.5 px-3 py-2.5 text-sm border transition-all duration-200 disabled:cursor-not-allowed ${
+                                            confirmDelete
+                                                ? 'border-red-500/60 bg-red-500/10 text-red-400 animate-pulse'
+                                                : 'border-white/10 text-[#a89f8c] hover:border-red-500/40 hover:text-red-400'
+                                        }`}
+                                        title="Delete inquiry"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                        {deleting ? 'Deleting…' : confirmDelete ? 'Confirm Delete?' : ''}
+                                    </button>
+                                </div>
                             </div>
                         </motion.aside>
                     </>
