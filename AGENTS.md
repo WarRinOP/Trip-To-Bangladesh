@@ -208,3 +208,23 @@ Home | Why Us | Destinations | Our Story | Travel Guide | Contact | [AI Planner]
 - admin_users table ✅
 - RLS policies active ✅
 - All indexes created ✅
+
+## Live Site & Browser Verification
+
+The one and only live URL for this project is:
+https://trip-to-bangladesh.vercel.app
+
+Rules for browser verification:
+- ALWAYS use https://trip-to-bangladesh.vercel.app
+- NEVER browse trip2bangladesh.com —
+  this domain is not yet connected
+- NEVER hallucinate or assume any other URL
+- NEVER use localhost for final verification
+  unless explicitly testing local-only features
+- When the prompt says "open browser and verify"
+  it always means https://trip-to-bangladesh.vercel.app
+- If Vercel deployment is still in progress,
+  wait for it to complete before verifying
+
+This rule applies to every agent in every
+future session without exception.

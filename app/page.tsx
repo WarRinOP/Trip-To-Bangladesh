@@ -220,6 +220,9 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* SECTION 4b - TripAdvisor Reviews */}
+      <TripAdvisorReviews />
+
       {/* SECTION 5 - How It Works */}
       <section className="py-24 bg-background-primary">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -263,47 +266,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* SECTION 6 - Testimonials */}
-      <section className="py-24 bg-background-secondary border-y border-accent-gold/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ScrollReveal>
-            <div className="text-center mb-16">
-              <h2 className="font-serif text-4xl md:text-5xl text-accent-gold mb-4">Traveler Stories</h2>
-              <p className="text-text-muted text-lg max-w-2xl mx-auto">
-                Don&apos;t just take our word for it.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {[
-                { name: "Sarah Jenkins", country: "🇬🇧", text: "The most incredible experience. Truly felt like we had a guardian angel showing us around." },
-                { name: "Michael Corbel", country: "🇺🇸", text: "Impeccable service from start to finish. The Sundarbans tour was nothing short of cinematic." },
-                { name: "Akito Tanaka", country: "🇯🇵", text: "Very professional, highly knowledgeable guides. The best way to see the true beauty of this country." }
-              ].map((review, i) => (
-                <Card key={i} className="p-8 flex flex-col justify-between">
-                  <div>
-                    <div className="flex text-accent-gold mb-6">
-                      {[1, 2, 3, 4, 5].map(star => <Star key={star} className="w-5 h-5 fill-current" />)}
-                    </div>
-                    <p className="text-text-primary text-lg italic leading-relaxed mb-8">
-                      &quot;{review.text}&quot;
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-3 border-t border-accent-gold/20 pt-4">
-                    <span className="text-2xl">{review.country}</span>
-                    <span className="font-serif text-lg text-accent-gold">{review.name}</span>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      {/* SECTION 6b - TripAdvisor Reviews */}
-      <TripAdvisorReviews />
-
-      {/* SECTION 7 - AI Itinerary Teaser */}
+      {/* SECTION 6 - AI Itinerary Teaser */}
       <section className="py-24 bg-background-secondary relative overflow-hidden">
         {/* Subtle background glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-accent-gold/5 rounded-full blur-[100px] pointer-events-none" />
