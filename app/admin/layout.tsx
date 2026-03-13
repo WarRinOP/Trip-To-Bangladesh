@@ -1,6 +1,8 @@
-import { createServerClient } from '@/lib/supabase';
+import { createServerClient, createAdminClient } from '@/lib/supabase';
 import { redirect } from 'next/navigation';
 import { Sidebar } from '@/components/admin/Sidebar';
+
+const FOUNDER_EMAIL = 'abrar.tajwar2@gmail.com';
 
 export default async function AdminLayout({
   children,
@@ -15,11 +17,28 @@ export default async function AdminLayout({
     redirect('/login');
   }
 
+  const isFounder = user.email === FOUNDER_EMAIL;
+
+  // Fetch pending request count (founder only — skip for others to save a DB call)
+  let pendingRequestCount = 0;
+  if (isFounder) {
+    const admin = createAdminClient();
+    const { count } = await admin
+      .from('admin_requests')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'pending');
+    pendingRequestCount = count ?? 0;
+  }
+
   return (
     // Full-screen container — no global Header/Footer here
     <div className="flex min-h-screen bg-background-primary">
       {/* Fixed sidebar — w-64 on desktop, off-canvas on mobile */}
-      <Sidebar userEmail={user.email} />
+      <Sidebar
+        userEmail={user.email}
+        isFounder={isFounder}
+        pendingRequestCount={pendingRequestCount}
+      />
 
       {/* Main content — pushed right by sidebar width on desktop */}
       <div className="flex flex-col flex-1 min-w-0 lg:ml-64">

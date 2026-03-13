@@ -13,6 +13,7 @@ import {
   Settings,
   CalendarDays,
   ExternalLink,
+  UserPlus,
 } from 'lucide-react';
 import { logoutAdmin } from '@/app/actions/admin.actions';
 import { useState } from 'react';
@@ -29,9 +30,11 @@ const NAV_ITEMS = [
 
 interface SidebarProps {
   userEmail?: string;
+  isFounder?: boolean;
+  pendingRequestCount?: number;
 }
 
-export function Sidebar({ userEmail }: SidebarProps) {
+export function Sidebar({ userEmail, isFounder = false, pendingRequestCount = 0 }: SidebarProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -115,6 +118,28 @@ export function Sidebar({ userEmail }: SidebarProps) {
               {label}
             </Link>
           ))}
+
+          {/* Requests — founder only */}
+          {isFounder && (
+            <Link
+              href="/admin/requests"
+              onClick={() => setMobileOpen(false)}
+              className={cn(
+                'flex items-center gap-3 px-3 py-2.5 text-sm rounded transition-all duration-150',
+                isActive('/admin/requests')
+                  ? 'bg-accent-gold/10 text-accent-gold border-l-2 border-accent-gold pl-[10px]'
+                  : 'text-text-muted hover:text-text-primary hover:bg-white/5 border-l-2 border-transparent pl-[10px]'
+              )}
+            >
+              <UserPlus className="w-4 h-4 shrink-0" />
+              <span className="flex-1">Requests</span>
+              {pendingRequestCount > 0 && (
+                <span className="ml-auto min-w-[20px] h-5 flex items-center justify-center rounded-full bg-accent-gold text-[#0a0f1a] text-[10px] font-bold px-1.5">
+                  {pendingRequestCount}
+                </span>
+              )}
+            </Link>
+          )}
         </nav>
 
         {/* Logout */}

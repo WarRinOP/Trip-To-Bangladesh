@@ -158,12 +158,18 @@ function LoginForm() {
                             )}
                         </button>
 
-                        <div className="text-center">
+                        <div className="flex items-center justify-between">
                             <a
                                 href="/login/forgot-password"
                                 className="text-text-muted text-xs hover:text-accent-gold transition-colors"
                             >
                                 Forgot password?
+                            </a>
+                            <a
+                                href="/admin/signup-request"
+                                className="text-text-muted text-xs hover:text-accent-gold transition-colors"
+                            >
+                                Request access →
                             </a>
                         </div>
                     </form>

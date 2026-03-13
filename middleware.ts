@@ -39,7 +39,9 @@ export async function middleware(request: NextRequest) {
     const isAuthRoute = pathname.startsWith('/auth')
 
     // Redirect unauthenticated users away from /admin to /login
-    if (isAdminRoute && !user) {
+    // Exception: /admin/signup-request is a public page (invite-code gated internally)
+    const isSignupRequest = pathname === '/admin/signup-request';
+    if (isAdminRoute && !user && !isSignupRequest) {
         const url = request.nextUrl.clone()
         url.pathname = '/login'
         return NextResponse.redirect(url)
