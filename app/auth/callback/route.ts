@@ -8,8 +8,9 @@ export async function GET(request: NextRequest) {
   const origin = requestUrl.origin;
 
   if (!code) {
-    // No code — bad link
-    return NextResponse.redirect(`${origin}/login?error=invalid_link`);
+    // Implicit-flow invite: Supabase appends tokens as a URL hash (#access_token=...)
+    // which never reaches this server handler. Redirect to a client page that reads it.
+    return NextResponse.redirect(`${origin}/auth/confirm`);
   }
 
   const cookieStore = cookies();
