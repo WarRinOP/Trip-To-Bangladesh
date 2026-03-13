@@ -166,7 +166,7 @@ function LoginForm() {
                                 Forgot password?
                             </a>
                             <a
-                                href="/admin/signup-request"
+                                href="/request-access"
                                 className="text-text-muted text-xs hover:text-accent-gold transition-colors"
                             >
                                 Request access →
