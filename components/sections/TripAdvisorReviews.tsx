@@ -227,6 +227,48 @@ export function TripAdvisorReviews() {
                     </div>
                 </ScrollReveal>
 
+                {/* ── Ontu Callout ── */}
+                <ScrollReveal>
+                    <div
+                        className="max-w-[640px] mx-auto mt-10 mb-10 p-8"
+                        style={{
+                            background: 'rgba(201,168,76,0.05)',
+                            border: '1px solid rgba(201,168,76,0.2)',
+                        }}
+                    >
+                        <div className="flex items-start gap-3">
+                            <Star className="w-5 h-5 text-accent-gold shrink-0 mt-1" fill="currentColor" />
+                            <div>
+                                <p className="font-mono text-[10px] uppercase tracking-[3px] text-accent-gold mb-3">
+                                    Most Mentioned
+                                </p>
+                                <p className="font-serif italic text-lg text-text-primary leading-[1.8]">
+                                    Our guide Ontu is mentioned by name in over 60% of our reviews — praised for his local knowledge, genuine care, and ability to show travelers a Bangladesh no guidebook has found.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </ScrollReveal>
+
+                {/* ── Emotional Bridge Line ── */}
+                <ScrollReveal>
+                    <div className="text-center max-w-[640px] mx-auto py-12 md:py-[48px]">
+                        <div
+                            className="mx-auto mb-6"
+                            style={{ width: 48, height: 1, background: 'rgba(201,168,76,0.5)' }}
+                            aria-hidden="true"
+                        />
+                        <p className="font-serif italic text-[18px] md:text-[22px] leading-relaxed" style={{ color: '#f5f0e8' }}>
+                            Twenty years of journeys. Every review below is a traveler who trusted us with their adventure — and came home changed.
+                        </p>
+                        <div
+                            className="mx-auto mt-6"
+                            style={{ width: 48, height: 1, background: 'rgba(201,168,76,0.5)' }}
+                            aria-hidden="true"
+                        />
+                    </div>
+                </ScrollReveal>
+
                 {/* ── Hero Review Card ── */}
                 <ScrollReveal>
                     <div
@@ -332,29 +374,6 @@ export function TripAdvisorReviews() {
                         </motion.div>
                     ))}
                 </div>
-
-                {/* ── Ontu Callout ── */}
-                <ScrollReveal>
-                    <div
-                        className="max-w-[640px] mx-auto mt-16 p-8"
-                        style={{
-                            background: 'rgba(201,168,76,0.05)',
-                            border: '1px solid rgba(201,168,76,0.2)',
-                        }}
-                    >
-                        <div className="flex items-start gap-3">
-                            <Star className="w-5 h-5 text-accent-gold shrink-0 mt-1" fill="currentColor" />
-                            <div>
-                                <p className="font-mono text-[10px] uppercase tracking-[3px] text-accent-gold mb-3">
-                                    Most Mentioned
-                                </p>
-                                <p className="font-serif italic text-lg text-text-primary leading-[1.8]">
-                                    Our guide Ontu is mentioned by name in over 60% of our reviews — praised for his local knowledge, genuine care, and ability to show travelers a Bangladesh no guidebook has found.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </ScrollReveal>
 
                 {/* ── Bottom CTA ── */}
                 <ScrollReveal>
