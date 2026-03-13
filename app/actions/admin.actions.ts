@@ -38,6 +38,30 @@ export async function updateInquiryStatus(formData: FormData) {
   revalidatePath('/admin');
 }
 
+// Direct call version (for panel optimistic updates)
+export async function updateInquiryStatusDirect(
+  id: string,
+  status: 'pending' | 'contacted' | 'booked'
+): Promise<{ success: boolean; error?: string }> {
+  const parsed = statusSchema.safeParse({ id, status });
+  if (!parsed.success) return { success: false, error: 'Invalid input' };
+
+  const supabase = createAdminClient();
+  const { error } = await supabase
+    .from('inquiries')
+    .update({ status: parsed.data.status })
+    .eq('id', parsed.data.id);
+
+  if (error) {
+    console.error('Update inquiry status error:', error.message);
+    return { success: false, error: error.message };
+  }
+
+  revalidatePath('/admin/inquiries');
+  revalidatePath('/admin');
+  return { success: true };
+}
+
 // ─── Update tour active/featured ────────────────────────
 const tourStatusSchema = z.object({
   id: z.string().uuid(),
