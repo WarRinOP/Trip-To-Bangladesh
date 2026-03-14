@@ -55,8 +55,16 @@ const ptComponents = {
             const url = urlFor(value).width(900).url();
             return (
                 <figure className="my-10">
-                    <div className="relative w-full aspect-[16/9] overflow-hidden">
-                        <Image src={url} alt={value.alt ?? ''} fill className="object-cover" />
+                    <div className="relative w-full overflow-hidden rounded-sm">
+                        <Image
+                            src={url}
+                            alt={value.alt ?? ''}
+                            width={900}
+                            height={0}
+                            sizes="(max-width: 768px) 100vw, 900px"
+                            className="w-full h-auto"
+                            style={{ height: 'auto' }}
+                        />
                     </div>
                     {value.caption && (
                         <figcaption className="text-center text-text-muted/60 text-xs mt-3 font-sans">
@@ -121,8 +129,9 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                             alt={(coverImg as { alt?: string })?.alt ?? post.title}
                             fill
                             priority
-                            className="object-cover"
+                            className="object-cover object-top"
                         />
+
                     ) : (
                         <div className="w-full h-full bg-background-secondary" />
                     )}
