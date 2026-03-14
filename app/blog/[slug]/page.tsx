@@ -122,23 +122,28 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
             <div className="w-full">
                 {/* Hero Image */}
-                <div className="relative h-[60vh] w-full overflow-hidden">
+                <div className="relative w-full">
                     {coverUrl ? (
-                        <Image
-                            src={coverUrl}
-                            alt={(coverImg as { alt?: string })?.alt ?? post.title}
-                            fill
-                            priority
-                            className="object-cover object-top"
-                        />
-
+                        <>
+                            <Image
+                                src={coverUrl}
+                                alt={(coverImg as { alt?: string })?.alt ?? post.title}
+                                width={1600}
+                                height={900}
+                                sizes="100vw"
+                                priority
+                                className="w-full h-auto"
+                                style={{ height: 'auto' }}
+                            />
+                            {/* Gradient overlay — covers bottom half of image */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-background-primary via-background-primary/40 to-transparent" />
+                        </>
                     ) : (
-                        <div className="w-full h-full bg-background-secondary" />
+                        <div className="w-full h-[60vh] bg-background-secondary" />
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-background-primary via-background-primary/50 to-transparent" />
 
-                    {/* Title overlay */}
-                    <div className="absolute bottom-0 left-0 right-0 px-4 pb-14 max-w-4xl mx-auto">
+                    {/* Title overlay — sits at bottom of the image */}
+                    <div className="absolute bottom-0 left-0 right-0 px-4 pb-10 max-w-4xl mx-auto">
                         {post.categories?.[0] && (
                             <span className="inline-block border border-accent-gold/40 text-accent-gold text-[10px] uppercase tracking-widest px-3 py-1 mb-4">
                                 {post.categories[0].replace('-', ' ')}
