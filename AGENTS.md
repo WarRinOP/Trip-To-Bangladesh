@@ -228,3 +228,30 @@ Rules for browser verification:
 
 This rule applies to every agent in every
 future session without exception.
+
+## SEO Configuration
+- Sitemap: /sitemap.xml (auto-generated, all public routes)
+- Robots: /robots.txt (admin/login/auth/studio/api disallowed)
+- JSON-LD schemas: TravelAgency, WebSite (layout), 
+  BlogPosting (blog posts), BreadcrumbList + TouristTrip (destinations)
+- JsonLd component: components/seo/JsonLd.tsx
+- Canonical tags: all pages use vercel URL (trip-to-bangladesh.vercel.app)
+  — update to trip2bangladesh.com when domain is connected
+- OG tags: full suite on all pages (title, description, image)
+- Google Search Console: verified ✅ + sitemap submitted ✅
+  Verification code: ssALFh-IO3UYvv_6sBO2pFy2XjSGDTkEVOo-au3aqXU
+- Bing Webmaster Tools: property added, verification pending
+  Verification code: 62904F60D2EE59D56BDCEBB007277DB4
+- IndexNow: key fa8d02202ad3482b9a63d07e320baf97
+  File: public/fa8d02202ad3482b9a63d07e320baf97.txt
+  Ping utility: lib/seo-ping.ts
+- PageSpeed scores (mobile): Performance 84 | Accessibility 92 | 
+  Best Practices 92 | SEO 100
+- New env vars (in Vercel + .env.local):
+  NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+  NEXT_PUBLIC_BING_SITE_VERIFICATION
+  INDEXNOW_KEY
+- Preconnects: fonts.googleapis.com, api.mapbox.com, cdn.sanity.io
+- DNS prefetch: www.google-analytics.com
+- Theme color: #0a0f1a (meta theme-color)
+- Image optimization: AVIF + WebP formats, 60s TTL, device sizes set
