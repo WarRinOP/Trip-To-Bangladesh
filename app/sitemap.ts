@@ -33,7 +33,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {
       url: BASE_URL,
       lastModified: now,
-      changeFrequency: 'weekly',
+      changeFrequency: 'daily',
       priority: 1.0,
     },
 
@@ -42,14 +42,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${BASE_URL}/why-us`,
       lastModified: now,
       changeFrequency: 'monthly' as const,
-      priority: 0.8,
+      priority: 0.9,
     },
 
     // ── Destinations overview ─────────────────────────────────
     {
       url: `${BASE_URL}/destinations`,
       lastModified: now,
-      changeFrequency: 'weekly',
+      changeFrequency: 'weekly' as const,
       priority: 0.9,
     },
 
@@ -57,7 +57,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...DESTINATION_SLUGS.map((slug) => ({
       url: `${BASE_URL}/destinations/${slug}`,
       lastModified: now,
-      changeFrequency: 'monthly' as const,
+      changeFrequency: 'weekly' as const,
       priority: 0.8,
     })),
 
@@ -77,22 +77,37 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     },
 
+    // ── Testimonials ──────────────────────────────────────────
+    {
+      url: `${BASE_URL}/testimonials`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.8,
+    },
 
     // ── Blog index ────────────────────────────────────────────
     {
       url: `${BASE_URL}/blog`,
       lastModified: now,
-      changeFrequency: 'weekly' as const,
-      priority: 0.7,
+      changeFrequency: 'daily' as const,
+      priority: 0.8,
     },
 
     // ── Blog posts ────────────────────────────────────────────
     ...blogSlugs.map((slug) => ({
       url: `${BASE_URL}/blog/${slug}`,
       lastModified: now,
-      changeFrequency: 'monthly' as const,
+      changeFrequency: 'weekly' as const,
       priority: 0.7,
     })),
+
+    // ── Contact ───────────────────────────────────────────────
+    {
+      url: `${BASE_URL}/contact`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    },
 
     // ── About ─────────────────────────────────────────────────
     {
@@ -100,22 +115,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: 'monthly' as const,
       priority: 0.6,
-    },
-
-    // ── Contact ───────────────────────────────────────────────
-    {
-      url: `${BASE_URL}/contact`,
-      lastModified: now,
-      changeFrequency: 'monthly' as const,
-      priority: 0.6,
-    },
-
-    // ── Testimonials ──────────────────────────────────────────
-    {
-      url: `${BASE_URL}/testimonials`,
-      lastModified: now,
-      changeFrequency: 'monthly' as const,
-      priority: 0.8,
     },
   ];
 }

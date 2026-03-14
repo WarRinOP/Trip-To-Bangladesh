@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: "Our Story — A Legacy of Bangladesh Tourism",
   description:
     "Meet the family behind Trip to Bangladesh. Founded by Mahmud Hasan Khan, recognized by Lonely Planet as a Guardian Angel for international travelers.",
-  alternates: { canonical: "https://trip2bangladesh.com/about" },
+  alternates: { canonical: "https://trip-to-bangladesh.vercel.app/about" },
   openGraph: {
     title: "Our Story — A Legacy of Bangladesh Tourism",
     description:

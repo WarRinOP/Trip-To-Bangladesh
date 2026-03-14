@@ -11,7 +11,8 @@ export const metadata: Metadata = {
   title: 'Book a Bangladesh Tour — Contact Us',
   description:
     'Ready to explore Bangladesh? Contact our expert guides. We respond within 24 hours. Recognized by Lonely Planet.',
-  alternates: { canonical: 'https://trip2bangladesh.com/contact' },
+  alternates: { canonical: 'https://trip-to-bangladesh.vercel.app/contact' },
+
   openGraph: {
     title: 'Book a Bangladesh Tour — Contact Us',
     description: 'Tell us your dream trip. We will make it real.',

@@ -11,6 +11,8 @@ import { TourInquiryForm } from '@/components/sections/TourInquiryForm';
 import { AIPlannerNudge } from '@/components/ui/AIPlannerNudge';
 import { Check, Clock, Users, DollarSign, MapPin } from 'lucide-react';
 import { AvailabilitySection } from '@/components/sections/AvailabilitySection';
+import { JsonLd } from '@/components/seo/JsonLd';
+
 
 // Tours with static fallback data — destinations exist regardless of DB state
 const STATIC_TOURS: Record<string, {
@@ -171,7 +173,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     return {
         title: `${tour.name} | Trip to Bangladesh`,
         description: `Join our expert-guided ${tour.name} journey: ${tour.tagline}. ${tour.highlights[0]}.`,
-        alternates: { canonical: `https://trip2bangladesh.com/destinations/${params.slug}` },
+        alternates: { canonical: `https://trip-to-bangladesh.vercel.app/destinations/${params.slug}` },
+
         openGraph: {
             title: `${tour.name} | Trip to Bangladesh`,
             description: `${tour.tagline}. ${tour.highlights[0]}.`,
@@ -216,8 +219,9 @@ export default async function TourPage({ params }: { params: { slug: string } })
         provider: {
             '@type': 'TravelAgency',
             name: 'Trip to Bangladesh',
-            url: 'https://trip2bangladesh.com',
+            url: 'https://trip-to-bangladesh.vercel.app',
         },
+
         ...(dbTour?.price_usd ? {
             offers: {
                 '@type': 'Offer',
@@ -228,13 +232,22 @@ export default async function TourPage({ params }: { params: { slug: string } })
         } : {}),
     };
 
+    const SITE_URL = 'https://trip-to-bangladesh.vercel.app';
+    const breadcrumbLd = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+            { '@type': 'ListItem', position: 2, name: 'Destinations', item: `${SITE_URL}/destinations` },
+            { '@type': 'ListItem', position: 3, name: staticTour.name, item: `${SITE_URL}/destinations/${params.slug}` },
+        ],
+    };
+
     return (
         <>
             {/* JSON-LD structured data */}
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-            />
+            <JsonLd data={jsonLd} />
+            <JsonLd data={breadcrumbLd} />
             <div className="w-full">
             {/* Hero */}
             <ParallaxHero

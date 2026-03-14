@@ -6,6 +6,8 @@ import { PortableText } from '@portabletext/react';
 import { getPostBySlug, getRelatedPosts, urlFor } from '@/lib/sanity';
 import { ReadingProgressBar } from '@/components/ui/ReadingProgressBar';
 import { Calendar, Clock, ArrowLeft, BookOpen, ArrowRight } from 'lucide-react';
+import { JsonLd } from '@/components/seo/JsonLd';
+
 
 // ─── Portable Text Components ─────────────────────────────────────────────────
 
@@ -90,6 +92,7 @@ export async function generateMetadata({
     return {
         title: `${post.seoTitle ?? post.title} | Bangladesh Travel Guide`,
         description: post.excerpt,
+        alternates: { canonical: `https://trip-to-bangladesh.vercel.app/blog/${params.slug}` },
         openGraph: {
             title: post.seoTitle ?? post.title,
             description: post.excerpt,
@@ -97,6 +100,7 @@ export async function generateMetadata({
         },
     };
 }
+
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -116,8 +120,33 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
     const coverImg = post.coverImage ?? post.mainImage;
     const coverUrl = coverImg ? urlFor(coverImg).width(1600).url() : null;
 
+    // BlogPosting structured data
+    const blogPostingLd = {
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: post.title,
+        description: post.excerpt ?? '',
+        image: coverUrl ?? '',
+        datePublished: post.publishedAt ?? '',
+        dateModified: post.publishedAt ?? '',
+        author: {
+            '@type': 'Organization',
+            name: 'Trip to Bangladesh',
+        },
+        publisher: {
+            '@type': 'Organization',
+            name: 'Trip to Bangladesh',
+            url: 'https://trip-to-bangladesh.vercel.app',
+        },
+        mainEntityOfPage: {
+            '@type': 'WebPage',
+            '@id': `https://trip-to-bangladesh.vercel.app/blog/${post.slug.current}`,
+        },
+    };
+
     return (
         <>
+            <JsonLd data={blogPostingLd} />
             <ReadingProgressBar />
 
             <div className="w-full">

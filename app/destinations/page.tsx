@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     title: 'Bangladesh Tour Packages & Destinations',
     description:
         'Explore Bangladesh with expert guides. Sundarbans wildlife tours, Cox\'s Bazar beach, Dhaka city tours, village experiences and more.',
-    alternates: { canonical: 'https://trip2bangladesh.com/destinations' },
+    alternates: { canonical: 'https://trip-to-bangladesh.vercel.app/destinations' },
     openGraph: {
         title: 'Bangladesh Tour Packages & Destinations',
         description: 'Six extraordinary journeys. One unforgettable country.',

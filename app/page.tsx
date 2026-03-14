@@ -18,8 +18,9 @@ export const metadata: Metadata = {
   title: "Trip to Bangladesh — Expert Guided Tours",
   description:
     "Premium guided tours across Bangladesh. Sundarbans, Cox's Bazar, Dhaka and beyond. 20+ years experience. Lonely Planet recognized.",
-  alternates: { canonical: "https://trip2bangladesh.com" },
+  alternates: { canonical: "https://trip-to-bangladesh.vercel.app" },
 };
+
 
 // JSON-LD: Organization / TravelAgency
 const jsonLd = {
