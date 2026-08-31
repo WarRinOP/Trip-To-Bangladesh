@@ -5,6 +5,7 @@
 import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabase';
 import { resend } from '@/lib/resend';
+import { escapeHtml } from '@/lib/utils';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import { headers } from 'next/headers';
@@ -109,23 +110,36 @@ export async function submitInquiry(
   }
 
   // 4. Send email notification to admin via Resend
+  // Every interpolated field below is attacker-supplied, so it is HTML-escaped —
+  // otherwise a submitter could inject markup into the email the admin reads.
   if (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY !== 'dummy_key') {
+    const safe = {
+      full_name: escapeHtml(data.full_name),
+      email: escapeHtml(data.email),
+      country: escapeHtml(data.country),
+      phone: escapeHtml(data.phone || 'N/A'),
+      tour_interest: escapeHtml(data.tour_interest),
+      travel_dates: escapeHtml(data.travel_dates),
+      group_size: escapeHtml(data.group_size),
+      special_requirements: escapeHtml(data.special_requirements || 'None'),
+    };
+
     try {
       await resend.emails.send({
         from: 'Trip to Bangladesh <onboarding@resend.dev>',
         to: 'mahmud.bangladesh@gmail.com',
-        subject: `New Inquiry — ${data.full_name}`,
+        subject: `New Inquiry — ${data.full_name.replace(/[\r\n]+/g, ' ')}`,
         html: `
           <h2>New Travel Inquiry</h2>
           <table style="border-collapse:collapse;width:100%">
-            <tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Name</td><td style="padding:8px;border-bottom:1px solid #eee;">${data.full_name}</td></tr>
-            <tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Email</td><td style="padding:8px;border-bottom:1px solid #eee;">${data.email}</td></tr>
-            <tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Country</td><td style="padding:8px;border-bottom:1px solid #eee;">${data.country}</td></tr>
-            <tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Phone</td><td style="padding:8px;border-bottom:1px solid #eee;">${data.phone || 'N/A'}</td></tr>
-            <tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Tour Interest</td><td style="padding:8px;border-bottom:1px solid #eee;">${data.tour_interest}</td></tr>
-            <tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Travel Dates</td><td style="padding:8px;border-bottom:1px solid #eee;">${data.travel_dates}</td></tr>
-            <tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Group Size</td><td style="padding:8px;border-bottom:1px solid #eee;">${data.group_size}</td></tr>
-            <tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Special Requirements</td><td style="padding:8px;border-bottom:1px solid #eee;">${data.special_requirements || 'None'}</td></tr>
+            <tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Name</td><td style="padding:8px;border-bottom:1px solid #eee;">${safe.full_name}</td></tr>
+            <tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Email</td><td style="padding:8px;border-bottom:1px solid #eee;">${safe.email}</td></tr>
+            <tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Country</td><td style="padding:8px;border-bottom:1px solid #eee;">${safe.country}</td></tr>
+            <tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Phone</td><td style="padding:8px;border-bottom:1px solid #eee;">${safe.phone}</td></tr>
+            <tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Tour Interest</td><td style="padding:8px;border-bottom:1px solid #eee;">${safe.tour_interest}</td></tr>
+            <tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Travel Dates</td><td style="padding:8px;border-bottom:1px solid #eee;">${safe.travel_dates}</td></tr>
+            <tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Group Size</td><td style="padding:8px;border-bottom:1px solid #eee;">${safe.group_size}</td></tr>
+            <tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Special Requirements</td><td style="padding:8px;border-bottom:1px solid #eee;">${safe.special_requirements}</td></tr>
           </table>
         `,
       });
@@ -136,22 +150,22 @@ export async function submitInquiry(
 
     // 5. Send confirmation email to traveler
     try {
-      const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '';
+      const whatsappNumber = encodeURIComponent(process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '');
       await resend.emails.send({
         from: 'Trip to Bangladesh <onboarding@resend.dev>',
         to: data.email,
         subject: 'We received your inquiry — Trip to Bangladesh',
         html: `
           <div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;color:#333;">
-            <h2 style="color:#c9a84c;">Thank you, ${data.full_name}!</h2>
+            <h2 style="color:#c9a84c;">Thank you, ${safe.full_name}!</h2>
             <p>We have received your travel inquiry and are excited to help plan your Bangladesh journey.</p>
             <p>Our team will review your request and respond <strong>within 24 hours</strong> with a personalised itinerary and pricing.</p>
             <hr style="border:none;border-top:1px solid #ddd;margin:24px 0;">
             <p><strong>Your inquiry details:</strong></p>
             <ul>
-              <li>Tour: ${data.tour_interest}</li>
-              <li>Dates: ${data.travel_dates}</li>
-              <li>Group: ${data.group_size} traveler(s)</li>
+              <li>Tour: ${safe.tour_interest}</li>
+              <li>Dates: ${safe.travel_dates}</li>
+              <li>Group: ${safe.group_size} traveler(s)</li>
             </ul>
             <p>Need faster assistance? WhatsApp us directly: <a href="https://wa.me/${whatsappNumber}" style="color:#25D366;">Chat on WhatsApp</a></p>
             <p style="color:#999;font-size:12px;margin-top:32px;">Trip to Bangladesh — Recognised by Lonely Planet</p>

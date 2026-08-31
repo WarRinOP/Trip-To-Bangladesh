@@ -171,6 +171,10 @@ export function TeamClient({ members: initialMembers }: TeamClientProps) {
         <p className="text-text-muted text-sm mt-2">
           All accounts with admin dashboard access. Only you can remove access.
         </p>
+        <p className="text-text-muted/70 text-xs mt-1.5">
+          Role labels are descriptive — every member below has the same dashboard
+          access. Deleting an inquiry still requires your approval.
+        </p>
       </div>
 
       {/* Stats row */}

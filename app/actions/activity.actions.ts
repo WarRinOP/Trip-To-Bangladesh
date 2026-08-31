@@ -2,9 +2,8 @@
 
 import { z } from 'zod';
 import { createAdminClient, createServerClient } from '@/lib/supabase';
+import { FOUNDER_EMAIL } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
-
-const FOUNDER_EMAIL = 'abrar.tajwar2@gmail.com';
 
 // ─── Request to delete an inquiry (non-founder) ─────────
 export async function requestDeleteInquiry(

@@ -1,13 +1,12 @@
 import type { Metadata } from 'next';
 import { createServerClient, createAdminClient } from '@/lib/supabase';
+import { FOUNDER_EMAIL } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { TeamClient, type TeamMember } from '@/components/admin/TeamClient';
 
 export const metadata: Metadata = {
   title: 'Team Members — Founder Dashboard',
 };
-
-const FOUNDER_EMAIL = 'abrar.tajwar2@gmail.com';
 
 export default async function AdminTeamPage() {
   // ── Auth guard: founder only ─────────────────────────────────────────────────

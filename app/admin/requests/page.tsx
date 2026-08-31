@@ -1,13 +1,12 @@
 import type { Metadata } from 'next';
 import { createServerClient, createAdminClient } from '@/lib/supabase';
+import { FOUNDER_EMAIL } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { AdminRequestsClient } from '@/components/admin/AdminRequestsClient';
 
 export const metadata: Metadata = {
     title: 'Admin Requests — Founder Dashboard',
 };
-
-const FOUNDER_EMAIL = 'abrar.tajwar2@gmail.com';
 
 export default async function AdminRequestsPage() {
     // Auth guard — founder only

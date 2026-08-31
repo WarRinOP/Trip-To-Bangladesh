@@ -1,9 +1,8 @@
 'use server';
 
 import { createServerClient, createAdminClient } from '@/lib/supabase';
+import { FOUNDER_EMAIL } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
-
-const FOUNDER_EMAIL = 'abrar.tajwar2@gmail.com';
 
 export async function removeAdminAccess(
   formData: FormData

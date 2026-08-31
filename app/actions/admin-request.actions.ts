@@ -2,15 +2,15 @@
 
 import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabase';
+import { FOUNDER_EMAIL } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
-// ─── Constants ────────────────────────────────────────────────────────────────
-
-const FOUNDER_EMAIL = 'abrar.tajwar2@gmail.com';
-
 // ─── Submit admin access request (PUBLIC) ─────────────────────────────────────
 
+// NOTE: `role` is descriptive metadata only — it is chosen by the requester in a
+// public form, so it must never be used as an authorization input. The only
+// privilege boundary in this app is FOUNDER_EMAIL (see lib/auth.ts).
 const requestSchema = z.object({
     name: z.string().min(2).max(80),
     email: z.string().email(),

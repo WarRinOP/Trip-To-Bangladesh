@@ -11,6 +11,16 @@ import { JsonLd } from '@/components/seo/JsonLd';
 
 // ─── Portable Text Components ─────────────────────────────────────────────────
 
+// CMS-authored link hrefs are untrusted: a `javascript:` or `data:` URL would
+// execute on click. Allow only navigable schemes and site-relative paths.
+function safeHref(href: string | undefined): string | undefined {
+    if (!href) return undefined;
+    const trimmed = href.trim();
+    if (/^\/(?!\/)/.test(trimmed) || /^#/.test(trimmed)) return trimmed;
+    if (/^(https?|mailto|tel):/i.test(trimmed)) return trimmed;
+    return undefined;
+}
+
 const ptComponents = {
     block: {
         h2: ({ children }: { children?: React.ReactNode }) => (
@@ -39,16 +49,22 @@ const ptComponents = {
         em: ({ children }: { children?: React.ReactNode }) => (
             <em className="italic">{children}</em>
         ),
-        link: ({ value, children }: { value?: { href: string }; children?: React.ReactNode }) => (
-            <a
-                href={value?.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-accent-gold underline underline-offset-2 hover:text-white transition-colors"
-            >
-                {children}
-            </a>
-        ),
+        link: ({ value, children }: { value?: { href: string }; children?: React.ReactNode }) => {
+            const href = safeHref(value?.href);
+            // Rejected scheme — render the text, drop the link.
+            if (!href) return <>{children}</>;
+
+            return (
+                <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-accent-gold underline underline-offset-2 hover:text-white transition-colors"
+                >
+                    {children}
+                </a>
+            );
+        },
     },
     types: {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,7 +1,6 @@
 import { createAdminClient, createServerClient } from '@/lib/supabase';
+import { FOUNDER_EMAIL } from '@/lib/auth';
 import { InquiriesTable } from '@/components/admin/InquiriesTable';
-
-const FOUNDER_EMAIL = 'abrar.tajwar2@gmail.com';
 
 async function getInquiries() {
   const supabase = createAdminClient();

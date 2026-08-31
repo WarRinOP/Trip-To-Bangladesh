@@ -149,12 +149,16 @@ export default function SignupRequestPage() {
                                     className="w-full bg-[#0a0f1a] border border-gray-700 px-4 py-3 text-text-primary focus:outline-none focus:border-accent-gold transition-colors text-sm"
                                 >
                                     <option value="">Select a role…</option>
-                                    <option value="manager">Manager — Full access</option>
-                                    <option value="staff">Staff — Inquiries only</option>
+                                    <option value="manager">Manager</option>
+                                    <option value="staff">Staff</option>
                                 </select>
                                 {errors.role && (
                                     <p className="text-red-400 text-xs mt-1.5">{errors.role.message}</p>
                                 )}
+                                <p className="text-text-muted/70 text-xs mt-1.5">
+                                    Describes your job function. All approved accounts share the
+                                    same dashboard access; deletions still require founder approval.
+                                </p>
                             </div>
 
                             {/* Invite Code */}

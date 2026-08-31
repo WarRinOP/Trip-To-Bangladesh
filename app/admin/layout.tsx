@@ -1,8 +1,7 @@
 import { createServerClient, createAdminClient } from '@/lib/supabase';
+import { FOUNDER_EMAIL } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { Sidebar } from '@/components/admin/Sidebar';
-
-const FOUNDER_EMAIL = 'abrar.tajwar2@gmail.com';
 
 export default async function AdminLayout({
   children,

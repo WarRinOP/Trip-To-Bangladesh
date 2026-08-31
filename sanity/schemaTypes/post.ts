@@ -42,7 +42,35 @@ export default {
             title: 'Content',
             type: 'array',
             of: [
-                { type: 'block' },
+                {
+                    type: 'block',
+                    marks: {
+                        // Restrict link schemes in Studio. Advisory only — writes via
+                        // the Sanity HTTP API bypass this, so the renderer in
+                        // app/blog/[slug]/page.tsx does the load-bearing check.
+                        annotations: [
+                            {
+                                name: 'link',
+                                title: 'Link',
+                                type: 'object',
+                                fields: [
+                                    {
+                                        name: 'href',
+                                        title: 'URL',
+                                        type: 'url',
+                                        validation: (Rule: {
+                                            uri: (opts: { scheme: string[]; allowRelative: boolean }) => unknown;
+                                        }) =>
+                                            Rule.uri({
+                                                scheme: ['http', 'https', 'mailto', 'tel'],
+                                                allowRelative: true,
+                                            }),
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                },
                 {
                     type: 'image',
                     options: { hotspot: true },
