@@ -19,7 +19,7 @@ export default async function AdminLayout({
     // check. Cookie writes are swallowed in a Server Component (see
     // lib/supabase.ts), but signOut()'s revocation call still happens, and
     // middleware clears the cookie itself on the next request.
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     await supabase.auth.signOut();
     redirect('/login?error=unauthorized');
   }

@@ -100,15 +100,16 @@ const ptComponents = {
 export async function generateMetadata({
     params,
 }: {
-    params: { slug: string };
+    params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-    const post = await getPostBySlug(params.slug);
+    const { slug } = await params;
+    const post = await getPostBySlug(slug);
     if (!post) return { title: 'Post Not Found' };
     const img = post.coverImage ?? post.mainImage;
     return {
         title: `${post.seoTitle ?? post.title} | Bangladesh Travel Guide`,
         description: post.excerpt,
-        alternates: { canonical: `https://trip-to-bangladesh.vercel.app/blog/${params.slug}` },
+        alternates: { canonical: `https://trip-to-bangladesh.vercel.app/blog/${slug}` },
         openGraph: {
             title: post.seoTitle ?? post.title,
             description: post.excerpt,
@@ -128,8 +129,9 @@ function formatDate(dateStr: string) {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-    const post = await getPostBySlug(params.slug);
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
+    const post = await getPostBySlug(slug);
     if (!post) notFound();
 
     const relatedPosts = await getRelatedPosts(post.categories ?? [], post.slug.current);

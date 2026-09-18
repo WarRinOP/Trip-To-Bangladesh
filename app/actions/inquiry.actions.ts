@@ -57,7 +57,7 @@ export async function submitInquiry(
   formData: FormData,
 ): Promise<InquiryState> {
   // 1. Rate limit by IP
-  const ip = getClientIp();
+  const ip = await getClientIp();
   const ratelimit = getRatelimit();
   if (ratelimit) {
     const { success } = await ratelimit.limit(`contact_${ip}`);

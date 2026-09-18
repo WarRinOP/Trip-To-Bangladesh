@@ -2,21 +2,14 @@ import { AIPlannerNudge } from '@/components/ui/AIPlannerNudge';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import dynamic from 'next/dynamic';
 import { ParallaxHero } from '@/components/ui/ParallaxHero';
 import { AnimatedHeading } from '@/components/ui/AnimatedHeading';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
 import { TiltCard } from '@/components/ui/TiltCard';
 import { Button } from '@/components/ui/Button';
 import { FadeIn } from '@/components/ui/FadeIn';
-import { MapSkeleton } from '@/components/ui/MapSkeleton';
 import { MapPin } from 'lucide-react';
-
-// Dynamic import — Mapbox requires browser APIs, never SSR
-const MapView = dynamic(
-  () => import('@/components/ui/MapView').then((m) => m.MapView),
-  { ssr: false, loading: () => <MapSkeleton variant="compact" /> }
-);
+import { MapViewCompact as MapView } from '@/components/ui/DynamicMapView';
 
 export const metadata: Metadata = {
     title: 'Bangladesh Tour Packages & Destinations',

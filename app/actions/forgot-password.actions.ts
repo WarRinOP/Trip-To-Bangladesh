@@ -31,7 +31,7 @@ export async function requestPasswordReset(
   prevState: ForgotPasswordState,
   formData: FormData,
 ): Promise<ForgotPasswordState> {
-  const ip = getClientIp();
+  const ip = await getClientIp();
 
   const rl = getRatelimit();
   if (rl) {
@@ -49,7 +49,7 @@ export async function requestPasswordReset(
     return { success: false, error: 'Please enter a valid email address.' };
   }
 
-  const supabase = createServerClient();
+  const supabase = await createServerClient();
 
   // This sends the reset email with redirectTo pointing to our callback
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://trip-to-bangladesh.vercel.app';

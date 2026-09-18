@@ -167,13 +167,14 @@ export async function generateStaticParams() {
     return Object.keys(STATIC_TOURS).map(slug => ({ slug }));
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-    const tour = STATIC_TOURS[params.slug];
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const { slug } = await params;
+    const tour = STATIC_TOURS[slug];
     if (!tour) return { title: 'Tour Not Found' };
     return {
         title: `${tour.name} | Trip to Bangladesh`,
         description: `Join our expert-guided ${tour.name} journey: ${tour.tagline}. ${tour.highlights[0]}.`,
-        alternates: { canonical: `https://trip-to-bangladesh.vercel.app/destinations/${params.slug}` },
+        alternates: { canonical: `https://trip-to-bangladesh.vercel.app/destinations/${slug}` },
 
         openGraph: {
             title: `${tour.name} | Trip to Bangladesh`,
@@ -186,7 +187,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 // Fetch live tour from Supabase (if seeded) — falls back to static data
 async function getTourFromDB(slug: string) {
     try {
-        const supabase = createServerClient();
+        const supabase = await createServerClient();
         const { data } = await supabase
             .from('tours')
             .select('*')
@@ -199,15 +200,16 @@ async function getTourFromDB(slug: string) {
     }
 }
 
-export default async function TourPage({ params }: { params: { slug: string } }) {
-    const staticTour = STATIC_TOURS[params.slug];
+export default async function TourPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
+    const staticTour = STATIC_TOURS[slug];
     if (!staticTour) notFound();
 
     // Try DB data (for richer content when seeded), fallback to static
-    const dbTour = await getTourFromDB(params.slug);
+    const dbTour = await getTourFromDB(slug);
     const tour = { ...staticTour, dbTour };
 
-    const related = getRelated(params.slug);
+    const related = getRelated(slug);
 
     // JSON-LD: TouristTrip schema
     const jsonLd = {
@@ -239,7 +241,7 @@ export default async function TourPage({ params }: { params: { slug: string } })
         itemListElement: [
             { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
             { '@type': 'ListItem', position: 2, name: 'Destinations', item: `${SITE_URL}/destinations` },
-            { '@type': 'ListItem', position: 3, name: staticTour.name, item: `${SITE_URL}/destinations/${params.slug}` },
+            { '@type': 'ListItem', position: 3, name: staticTour.name, item: `${SITE_URL}/destinations/${slug}` },
         ],
     };
 
@@ -321,7 +323,7 @@ export default async function TourPage({ params }: { params: { slug: string } })
                                 <p className="text-text-muted text-sm">
                                     Select your preferred start date. Dates shown in red are unavailable.
                                 </p>
-                                <AvailabilitySection tourSlug={params.slug} />
+                                <AvailabilitySection tourSlug={slug} />
                             </div>
                         </ScrollReveal>
 

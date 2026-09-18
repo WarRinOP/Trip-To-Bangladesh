@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
-import dynamic from 'next/dynamic';
-import { MapSkeleton } from '@/components/ui/MapSkeleton';
+import { MapViewFull as MapView } from '@/components/ui/DynamicMapView';
 
 export const metadata: Metadata = {
   title: 'Explore Bangladesh — Interactive Destination Map | Trip to Bangladesh',
@@ -13,15 +12,6 @@ export const metadata: Metadata = {
     type: 'website',
   },
 };
-
-// Must be dynamically imported with ssr: false — Mapbox requires browser APIs
-const MapView = dynamic(
-  () => import('@/components/ui/MapView').then((m) => m.MapView),
-  {
-    ssr: false,
-    loading: () => <MapSkeleton variant="full" />,
-  }
-);
 
 export default function MapPage() {
   return (
