@@ -2,9 +2,9 @@
 
 import { z } from 'zod';
 import { createServerClient } from '@/lib/supabase';
+import { getClientIp } from '@/lib/client-ip';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
-import { headers } from 'next/headers';
 
 const schema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -31,7 +31,7 @@ export async function requestPasswordReset(
   prevState: ForgotPasswordState,
   formData: FormData,
 ): Promise<ForgotPasswordState> {
-  const ip = headers().get('x-forwarded-for') ?? '127.0.0.1';
+  const ip = getClientIp();
 
   const rl = getRatelimit();
   if (rl) {

@@ -1,5 +1,5 @@
-import { createAdminClient, createServerClient } from '@/lib/supabase';
-import { FOUNDER_EMAIL } from '@/lib/auth';
+import { createAdminClient } from '@/lib/supabase';
+import { getAdminUser } from '@/lib/auth';
 import { InquiriesTable } from '@/components/admin/InquiriesTable';
 
 async function getInquiries() {
@@ -17,9 +17,9 @@ async function getInquiries() {
 }
 
 export default async function InquiriesPage() {
-  const supabase = createServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  const isFounder = user?.email === FOUNDER_EMAIL;
+  // Layout already guarantees an approved admin got this far.
+  const adminUser = await getAdminUser();
+  const isFounder = adminUser?.isFounder ?? false;
 
   const inquiries = await getInquiries();
 

@@ -2,9 +2,9 @@
 
 import { z } from 'zod';
 import { createServerClient } from '@/lib/supabase';
+import { getClientIp } from '@/lib/client-ip';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
-import { headers } from 'next/headers';
 
 const schema = z.object({
     full_name: z.string().min(2, 'Name required').max(100),
@@ -32,7 +32,7 @@ export async function submitTourInquiry(
             redis: Redis.fromEnv(),
             limiter: Ratelimit.slidingWindow(3, '1 h'),
         });
-        const ip = headers().get('x-forwarded-for') ?? '127.0.0.1';
+        const ip = getClientIp();
         const { success } = await ratelimit.limit(`inquiry_${ip}`);
         if (!success) {
             return { success: false, error: 'Too many requests. Please try again later.' };

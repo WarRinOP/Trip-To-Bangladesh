@@ -3,9 +3,10 @@
 
 import { z } from 'zod';
 import { createServerClient } from '@/lib/supabase';
+import { requireAdmin } from '@/lib/auth';
+import { getClientIp } from '@/lib/client-ip';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
-import { headers } from 'next/headers';
 
 // ─── Zod schema ─────────────────────────────────────────────
 const passwordSchema = z.object({
@@ -48,7 +49,13 @@ export async function changeAdminPassword(
   prevState: PasswordChangeState,
   formData: FormData,
 ): Promise<PasswordChangeState> {
-  const ip = headers().get('x-forwarded-for') ?? '127.0.0.1';
+  // Re-verify caller is an approved admin — this action is destructive to the
+  // caller's own account, and Server Actions are independently-addressable
+  // POST endpoints, so the /admin layout gating the page is not authorization.
+  const auth = await requireAdmin();
+  if (!auth.user) return { success: false, error: auth.error ?? 'Not authorized' };
+
+  const ip = getClientIp();
 
   // Rate limit: 3 attempts per hour
   const rl = getRatelimit();
@@ -73,16 +80,11 @@ export async function changeAdminPassword(
   }
 
   const supabase = createServerClient();
-
-  // Get current user
-  const { data: { user }, error: userError } = await supabase.auth.getUser();
-  if (userError || !user?.email) {
-    return { success: false, error: 'Not authenticated. Please log in again.' };
-  }
+  const { user } = auth;
 
   // Verify current password by attempting sign-in
   const { error: verifyError } = await supabase.auth.signInWithPassword({
-    email: user.email,
+    email: user.email!,
     password: parsed.data.current_password,
   });
 

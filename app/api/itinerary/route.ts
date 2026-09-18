@@ -4,6 +4,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAnthropicClient } from '@/lib/anthropic';
 import { itineraryRequestSchema, BUDGET_OPTIONS, GROUP_TYPE_OPTIONS, DESTINATION_OPTIONS } from '@/lib/itinerary';
+import { getClientIp } from '@/lib/client-ip';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import { createClient } from '@supabase/supabase-js';
@@ -136,7 +137,10 @@ export async function POST(request: NextRequest) {
   const { duration, budget, groupType, destinations } = parsed.data;
 
   // 2. Rate limit — per IP
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? '127.0.0.1';
+  // This endpoint calls a paid, metered API, so in production it must fail
+  // closed: if Upstash isn't configured, reject rather than let every
+  // request through unlimited.
+  const ip = getClientIp(request);
   const ipLimiter = getIpRatelimit();
   if (ipLimiter) {
     const { success } = await ipLimiter.limit(`itinerary_${ip}`);
@@ -149,6 +153,12 @@ export async function POST(request: NextRequest) {
         { status: 429 }
       );
     }
+  } else if (process.env.NODE_ENV === 'production') {
+    console.error('[Itinerary] Rate limiter unconfigured in production — rejecting request');
+    return NextResponse.json(
+      { error: 'AI itinerary generator is temporarily unavailable. Please contact us directly.' },
+      { status: 503 }
+    );
   }
 
   // 3. Rate limit — global (after IP check)
@@ -164,6 +174,12 @@ export async function POST(request: NextRequest) {
         { status: 429 }
       );
     }
+  } else if (process.env.NODE_ENV === 'production') {
+    console.error('[Itinerary] Global rate limiter unconfigured in production — rejecting request');
+    return NextResponse.json(
+      { error: 'AI itinerary generator is temporarily unavailable. Please contact us directly.' },
+      { status: 503 }
+    );
   }
 
   // 4. Fetch matching tours from Supabase

@@ -47,7 +47,15 @@ export async function middleware(request: NextRequest) {
 
     // Redirect authenticated users away from /login → /admin
     // (but NOT from /auth/* routes — those need to work even with a session)
-    if (isLoginRoute && !isAuthRoute && user) {
+    //
+    // Skip this when an `error` param is present (e.g. ?error=unauthorized
+    // from admin/layout.tsx after signing out a non-admin session). Without
+    // this, a session that middleware still sees as valid for one more
+    // request — signOut()'s cookie clear can lag a beat behind its
+    // server-side revocation — would immediately bounce back to /admin,
+    // which redirects to /login again: an infinite loop.
+    const hasErrorParam = request.nextUrl.searchParams.has('error')
+    if (isLoginRoute && !isAuthRoute && user && !hasErrorParam) {
         const url = request.nextUrl.clone()
         url.pathname = '/admin'
         return NextResponse.redirect(url)

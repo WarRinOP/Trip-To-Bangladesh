@@ -1,5 +1,5 @@
 import { createServerClient, createAdminClient } from '@/lib/supabase';
-import { FOUNDER_EMAIL } from '@/lib/auth';
+import { getAdminUser } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { Sidebar } from '@/components/admin/Sidebar';
 
@@ -8,15 +8,23 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Server-side auth guard
-  const supabase = createServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  // Server-side auth guard — must be an approved admin, not just a logged-in user
+  const adminUser = await getAdminUser();
 
-  if (!user) {
-    redirect('/login');
+  if (!adminUser) {
+    // A Supabase session can exist without admin access (unapproved signup,
+    // or access revoked after the session was issued). Sign it out — not
+    // just redirect — so the stale session cookie doesn't keep bouncing
+    // this user between here and /login via middleware.ts's `user`-only
+    // check. Cookie writes are swallowed in a Server Component (see
+    // lib/supabase.ts), but signOut()'s revocation call still happens, and
+    // middleware clears the cookie itself on the next request.
+    const supabase = createServerClient();
+    await supabase.auth.signOut();
+    redirect('/login?error=unauthorized');
   }
 
-  const isFounder = user.email === FOUNDER_EMAIL;
+  const isFounder = adminUser.isFounder;
 
   const admin = createAdminClient();
 
@@ -50,7 +58,7 @@ export default async function AdminLayout({
     <div className="flex min-h-screen bg-background-primary">
       {/* Fixed sidebar — w-64 on desktop, off-canvas on mobile */}
       <Sidebar
-        userEmail={user.email}
+        userEmail={adminUser.email}
         isFounder={isFounder}
         pendingRequestCount={pendingRequestCount}
         unreadInquiryCount={unreadInquiryCount}

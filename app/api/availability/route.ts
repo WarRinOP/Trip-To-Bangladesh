@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import { createClient } from '@supabase/supabase-js';
 import { blockDateSchema, unblockDateSchema } from '@/lib/availability';
+import { getAdminUserFromClient } from '@/lib/auth';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 
@@ -44,7 +45,8 @@ function createRouteClient(request: NextRequest) {
 function createAdminSupabase() {
     return createClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY!
+        process.env.SUPABASE_SERVICE_ROLE_KEY!,
+        { auth: { persistSession: false, autoRefreshToken: false } }
     );
 }
 
@@ -100,17 +102,17 @@ export async function GET(request: NextRequest) {
 
 // ─── POST  /api/availability  (admin only) ────────────────────────────────────
 export async function POST(request: NextRequest) {
-    // 1. Auth check
+    // 1. Auth check — must be an approved admin, not just a logged-in user
     const routeClient = createRouteClient(request);
-    const { data: { user } } = await routeClient.auth.getUser();
-    if (!user) {
+    const adminUser = await getAdminUserFromClient(routeClient);
+    if (!adminUser) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // 2. Rate limit
     const limiter = getAdminRatelimit();
     if (limiter) {
-        const { success } = await limiter.limit(`availability_${user.id}`);
+        const { success } = await limiter.limit(`availability_${adminUser.id}`);
         if (!success) {
             return NextResponse.json({ error: 'Too many requests. Wait a moment.' }, { status: 429 });
         }
@@ -154,17 +156,17 @@ export async function POST(request: NextRequest) {
 
 // ─── DELETE  /api/availability  (admin only) ──────────────────────────────────
 export async function DELETE(request: NextRequest) {
-    // 1. Auth check
+    // 1. Auth check — must be an approved admin, not just a logged-in user
     const routeClient = createRouteClient(request);
-    const { data: { user } } = await routeClient.auth.getUser();
-    if (!user) {
+    const adminUser = await getAdminUserFromClient(routeClient);
+    if (!adminUser) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // 2. Rate limit
     const limiter = getAdminRatelimit();
     if (limiter) {
-        const { success } = await limiter.limit(`availability_${user.id}`);
+        const { success } = await limiter.limit(`availability_${adminUser.id}`);
         if (!success) {
             return NextResponse.json({ error: 'Too many requests. Wait a moment.' }, { status: 429 });
         }

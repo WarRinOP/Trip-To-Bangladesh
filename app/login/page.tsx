@@ -97,6 +97,17 @@ function LoginForm() {
                                 <a href="/login/forgot-password" className="underline hover:text-amber-300">Request a new one →</a>
                             </motion.div>
                         )}
+
+                        {urlError === 'unauthorized' && (
+                            <motion.div
+                                initial={{ opacity: 0, y: -8 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="flex items-center gap-3 bg-red-900/20 border border-red-700/40 text-red-400 p-4 text-sm mb-6"
+                            >
+                                <AlertCircle className="w-5 h-5 shrink-0" />
+                                Your account does not have admin privileges or access was revoked.
+                            </motion.div>
+                        )}
                     </AnimatePresence>
 
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
