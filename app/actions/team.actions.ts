@@ -35,7 +35,7 @@ export async function removeAdminAccess(
 
   if (deleteError) {
     console.error('[team] deleteUser error:', deleteError);
-    return { error: 'Failed to remove access. ' + deleteError.message };
+    return { error: 'Failed to remove access. Please try again.' };
   }
 
   // ── 6. Reset admin_requests so they can re-request access ───────────────────

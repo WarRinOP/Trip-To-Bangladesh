@@ -36,7 +36,7 @@ export async function updateInquiryStatusDirect(
 
   if (error) {
     console.error('Update inquiry status error:', error.message);
-    return { success: false, error: error.message };
+    return { success: false, error: 'Failed to update status. Please try again.' };
   }
 
   revalidatePath('/admin/inquiries');
@@ -80,7 +80,7 @@ export async function deleteInquiry(
 
   if (error) {
     console.error('Delete inquiry error:', error.message);
-    return { success: false, error: error.message };
+    return { success: false, error: 'Failed to delete inquiry. Please try again.' };
   }
 
   revalidatePath('/admin/inquiries');
