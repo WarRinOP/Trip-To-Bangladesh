@@ -148,7 +148,7 @@ export async function approveAdminRequest(formData: FormData) {
         if (createError.message.includes('already been registered')) {
             return { error: 'A Supabase auth user with this email already exists.' };
         }
-        return { error: 'Failed to create user account. ' + createError.message };
+        return { error: 'Failed to create user account. Please try again.' };
     }
 
     // 2. Mark request as approved

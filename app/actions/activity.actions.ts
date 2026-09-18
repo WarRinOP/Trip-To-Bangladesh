@@ -28,7 +28,7 @@ export async function requestDeleteInquiry(
 
   if (error) {
     console.error('Activity request insert error:', error.message);
-    return { success: false, error: error.message };
+    return { success: false, error: 'Failed to submit request. Please try again.' };
   }
 
   revalidatePath('/admin/activity');
@@ -63,7 +63,10 @@ export async function approveActivityRequest(
       .from('inquiries')
       .delete()
       .eq('id', req.target_id);
-    if (delErr) return { success: false, error: delErr.message };
+    if (delErr) {
+      console.error('Approve activity request — delete error:', delErr.message);
+      return { success: false, error: 'Failed to complete the request. Please try again.' };
+    }
   }
 
   // Mark as approved
