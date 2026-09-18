@@ -1,0 +1,21 @@
+name: Supabase keep-alive ping
+
+# Runs independently of Vercel Cron (see vercel.json) — if either scheduler
+# has downtime or drifts, the other still pings Supabase well under its
+# 7-day free-tier inactivity pause threshold. A failed or non-200 run fails
+# this job, which triggers GitHub's default email notification.
+
+on:
+  schedule:
+    - cron: '0 16 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping keep-alive endpoint
+        run: |
+          curl --fail --show-error --silent \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            https://trip-to-bangladesh.vercel.app/api/cron/keep-alive
