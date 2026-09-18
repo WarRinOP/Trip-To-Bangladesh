@@ -2,15 +2,20 @@
 
 import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabase';
-import { FOUNDER_EMAIL } from '@/lib/auth';
+import { requireFounder } from '@/lib/auth';
+import { getClientIp } from '@/lib/client-ip';
+import { Ratelimit } from '@upstash/ratelimit';
+import { Redis } from '@upstash/redis';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 // ─── Submit admin access request (PUBLIC) ─────────────────────────────────────
 
 // NOTE: `role` is descriptive metadata only — it is chosen by the requester in a
-// public form, so it must never be used as an authorization input. The only
-// privilege boundary in this app is FOUNDER_EMAIL (see lib/auth.ts).
+// public form, so it must never be used as an authorization input. The actual
+// privilege boundaries are FOUNDER_EMAIL and an approved admin_requests row
+// (see lib/auth.ts) — this table's `status` column is what grants access, not
+// the `role` a requester picked for themselves.
 const requestSchema = z.object({
     name: z.string().min(2).max(80),
     email: z.string().email(),
@@ -18,9 +23,36 @@ const requestSchema = z.object({
     inviteCode: z.string().min(1),
 });
 
+// This is the invite-code check — the front door of the whole admin access
+// flow — so it must fail closed if Upstash isn't configured, unlike the
+// lower-stakes public forms elsewhere.
+function getInviteRatelimit() {
+    if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+        return new Ratelimit({
+            redis: Redis.fromEnv(),
+            limiter: Ratelimit.slidingWindow(5, '1 h'),
+            analytics: true,
+            prefix: 'admin_request',
+        });
+    }
+    return null;
+}
+
 export async function submitAdminRequest(
     formData: FormData
 ): Promise<{ error?: string } | void> {
+    const ip = getClientIp();
+    const limiter = getInviteRatelimit();
+    if (limiter) {
+        const { success } = await limiter.limit(`admin_request_${ip}`);
+        if (!success) {
+            return { error: 'Too many attempts. Please try again later or contact the founder.' };
+        }
+    } else if (process.env.NODE_ENV === 'production') {
+        console.error('[admin-request] Rate limiter unconfigured in production — rejecting request');
+        return { error: 'This form is temporarily unavailable. Please contact the founder directly.' };
+    }
+
     const parsed = requestSchema.safeParse({
         name: formData.get('name'),
         email: formData.get('email'),
@@ -83,15 +115,12 @@ const approveSchema = z.object({
 });
 
 export async function approveAdminRequest(formData: FormData) {
-    const admin = createAdminClient();
-
     // Only founder can approve
-    const { createServerClient } = await import('@/lib/supabase');
-    const supabase = createServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user || user.email !== FOUNDER_EMAIL) {
-        return { error: 'Unauthorized.' };
-    }
+    const auth = await requireFounder();
+    if (!auth.user) return { error: auth.error };
+    const { user } = auth;
+
+    const admin = createAdminClient();
 
     const parsed = approveSchema.safeParse({
         requestId: formData.get('requestId'),
@@ -150,12 +179,9 @@ const rejectSchema = z.object({
 });
 
 export async function rejectAdminRequest(formData: FormData) {
-    const { createServerClient } = await import('@/lib/supabase');
-    const supabase = createServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user || user.email !== FOUNDER_EMAIL) {
-        return { error: 'Unauthorized.' };
-    }
+    const auth = await requireFounder();
+    if (!auth.user) return { error: auth.error };
+    const { user } = auth;
 
     const parsed = rejectSchema.safeParse({
         requestId: formData.get('requestId'),
@@ -189,12 +215,8 @@ export async function rejectAdminRequest(formData: FormData) {
 // ─── Delete rejected request — Founder only ────────────────────────────────────
 
 export async function deleteAdminRequest(formData: FormData) {
-    const { createServerClient } = await import('@/lib/supabase');
-    const supabase = createServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user || user.email !== FOUNDER_EMAIL) {
-        return { error: 'Unauthorized.' };
-    }
+    const auth = await requireFounder();
+    if (!auth.user) return { error: auth.error };
 
     const requestId = formData.get('requestId');
     if (typeof requestId !== 'string') return { error: 'Invalid ID.' };

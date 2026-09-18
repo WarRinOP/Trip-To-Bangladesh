@@ -3,7 +3,7 @@
 
 import { z } from 'zod';
 import { createAdminClient, createServerClient } from '@/lib/supabase';
-import { requireUser, requireFounder } from '@/lib/auth';
+import { requireAdmin, requireFounder } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
@@ -22,7 +22,7 @@ export async function updateInquiryStatusDirect(
   id: string,
   status: 'pending' | 'contacted' | 'booked'
 ): Promise<{ success: boolean; error?: string }> {
-  const auth = await requireUser();
+  const auth = await requireAdmin();
   if (!auth.user) return { success: false, error: auth.error };
 
   const parsed = statusSchema.safeParse({ id, status });
@@ -47,7 +47,7 @@ export async function updateInquiryStatusDirect(
 // ─── Mark inquiry as read ─────────────────────────────
 // Called fire-and-forget from the client (not awaited, no .catch) — must never throw.
 export async function markInquiryAsRead(id: string): Promise<void> {
-  const auth = await requireUser();
+  const auth = await requireAdmin();
   if (!auth.user) return;
 
   const supabase = createAdminClient();
@@ -98,7 +98,7 @@ const tourStatusSchema = z.object({
 // Used as a <form action> — the return value is discarded, so failures are
 // logged rather than surfaced, matching the existing validation-failure path.
 export async function updateTourStatus(formData: FormData) {
-  const auth = await requireUser();
+  const auth = await requireAdmin();
   if (!auth.user) {
     console.error('Unauthorized tour status update');
     return;

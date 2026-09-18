@@ -1,21 +1,16 @@
 'use server';
 
-import { createServerClient, createAdminClient } from '@/lib/supabase';
-import { FOUNDER_EMAIL } from '@/lib/auth';
+import { createAdminClient } from '@/lib/supabase';
+import { requireFounder } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 
 export async function removeAdminAccess(
   formData: FormData
 ): Promise<{ success?: true; error?: string }> {
   // ── 1. Re-verify caller is the founder ──────────────────────────────────────
-  const supabase = createServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user || user.email !== FOUNDER_EMAIL) {
-    return { error: 'Unauthorized.' };
-  }
+  const auth = await requireFounder();
+  if (!auth.user) return { error: auth.error };
+  const { user } = auth;
 
   // ── 2. Validate userId ──────────────────────────────────────────────────────
   const userId = formData.get('userId');

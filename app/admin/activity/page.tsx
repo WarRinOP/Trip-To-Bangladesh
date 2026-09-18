@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
-import { createServerClient, createAdminClient } from '@/lib/supabase';
-import { FOUNDER_EMAIL } from '@/lib/auth';
+import { createAdminClient } from '@/lib/supabase';
+import { getAdminUser } from '@/lib/auth';
 import { ActivityClient } from '@/components/admin/ActivityClient';
 
 export const metadata = { title: 'Activity Approval — Admin' };
@@ -21,9 +21,8 @@ async function getActivityRequests() {
 
 export default async function ActivityPage() {
   // Founder-only gate
-  const supabase = createServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user || user.email !== FOUNDER_EMAIL) redirect('/admin');
+  const adminUser = await getAdminUser();
+  if (!adminUser || !adminUser.isFounder) redirect('/admin');
 
   const requests = await getActivityRequests();
 

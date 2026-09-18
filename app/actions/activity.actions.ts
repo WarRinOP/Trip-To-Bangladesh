@@ -1,8 +1,8 @@
 'use server';
 
 import { z } from 'zod';
-import { createAdminClient, createServerClient } from '@/lib/supabase';
-import { FOUNDER_EMAIL } from '@/lib/auth';
+import { createAdminClient } from '@/lib/supabase';
+import { requireAdmin, requireFounder, FOUNDER_EMAIL } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 
 // ─── Request to delete an inquiry (non-founder) ─────────
@@ -13,15 +13,13 @@ export async function requestDeleteInquiry(
   const idParsed = z.string().uuid().safeParse(inquiryId);
   if (!idParsed.success) return { success: false, error: 'Invalid inquiry ID' };
 
-  // Get the requesting user's email
-  const supabaseUser = createServerClient();
-  const { data: { user } } = await supabaseUser.auth.getUser();
-  if (!user) return { success: false, error: 'Not authenticated' };
-  if (user.email === FOUNDER_EMAIL) return { success: false, error: 'Founder can delete directly' };
+  const auth = await requireAdmin();
+  if (!auth.user) return { success: false, error: auth.error };
+  if (auth.user.email === FOUNDER_EMAIL) return { success: false, error: 'Founder can delete directly' };
 
   const supabase = createAdminClient();
   const { error } = await supabase.from('activity_requests').insert({
-    requested_by: user.email,
+    requested_by: auth.user.email,
     action_type: 'delete_inquiry',
     target_id: inquiryId,
     target_description: inquiryDescription,
@@ -44,11 +42,8 @@ export async function approveActivityRequest(
   const idParsed = z.string().uuid().safeParse(requestId);
   if (!idParsed.success) return { success: false, error: 'Invalid request ID' };
 
-  const supabaseUser = createServerClient();
-  const { data: { user } } = await supabaseUser.auth.getUser();
-  if (!user || user.email !== FOUNDER_EMAIL) {
-    return { success: false, error: 'Not authorized' };
-  }
+  const auth = await requireFounder();
+  if (!auth.user) return { success: false, error: auth.error };
 
   const supabase = createAdminClient();
 
@@ -74,7 +69,7 @@ export async function approveActivityRequest(
   // Mark as approved
   await supabase
     .from('activity_requests')
-    .update({ status: 'approved', resolved_at: new Date().toISOString(), resolved_by: user.email })
+    .update({ status: 'approved', resolved_at: new Date().toISOString(), resolved_by: auth.user.email })
     .eq('id', requestId);
 
   revalidatePath('/admin/activity');
@@ -89,16 +84,13 @@ export async function rejectActivityRequest(
   const idParsed = z.string().uuid().safeParse(requestId);
   if (!idParsed.success) return { success: false, error: 'Invalid request ID' };
 
-  const supabaseUser = createServerClient();
-  const { data: { user } } = await supabaseUser.auth.getUser();
-  if (!user || user.email !== FOUNDER_EMAIL) {
-    return { success: false, error: 'Not authorized' };
-  }
+  const auth = await requireFounder();
+  if (!auth.user) return { success: false, error: auth.error };
 
   const supabase = createAdminClient();
   await supabase
     .from('activity_requests')
-    .update({ status: 'rejected', resolved_at: new Date().toISOString(), resolved_by: user.email })
+    .update({ status: 'rejected', resolved_at: new Date().toISOString(), resolved_by: auth.user.email })
     .eq('id', requestId);
 
   revalidatePath('/admin/activity');

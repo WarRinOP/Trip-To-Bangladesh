@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import { createServerClient, createAdminClient } from '@/lib/supabase';
-import { FOUNDER_EMAIL } from '@/lib/auth';
+import { createAdminClient } from '@/lib/supabase';
+import { getAdminUser } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { AdminRequestsClient } from '@/components/admin/AdminRequestsClient';
 
@@ -10,12 +10,9 @@ export const metadata: Metadata = {
 
 export default async function AdminRequestsPage() {
     // Auth guard — founder only
-    const supabase = createServerClient();
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
+    const adminUser = await getAdminUser();
 
-    if (!user || user.email !== FOUNDER_EMAIL) {
+    if (!adminUser || !adminUser.isFounder) {
         redirect('/admin');
     }
 

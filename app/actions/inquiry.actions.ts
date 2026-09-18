@@ -6,9 +6,9 @@ import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabase';
 import { resend } from '@/lib/resend';
 import { escapeHtml } from '@/lib/utils';
+import { getClientIp } from '@/lib/client-ip';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
-import { headers } from 'next/headers';
 
 // ─── Zod Schema ─────────────────────────────────────────
 const inquirySchema = z.object({
@@ -57,7 +57,7 @@ export async function submitInquiry(
   formData: FormData,
 ): Promise<InquiryState> {
   // 1. Rate limit by IP
-  const ip = headers().get('x-forwarded-for') ?? '127.0.0.1';
+  const ip = getClientIp();
   const ratelimit = getRatelimit();
   if (ratelimit) {
     const { success } = await ratelimit.limit(`contact_${ip}`);

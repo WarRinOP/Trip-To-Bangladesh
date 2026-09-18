@@ -1,9 +1,10 @@
 'use server';
 
 import { createServerClient } from '@/lib/supabase';
+import { getAdminUser } from '@/lib/auth';
+import { getClientIp } from '@/lib/client-ip';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
-import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
@@ -28,7 +29,7 @@ function getRatelimit() {
 
 // ─── Login Action ─────────────────────────────────────────────
 export async function loginAction(formData: FormData) {
-  const ip = headers().get('x-forwarded-for') ?? '127.0.0.1';
+  const ip = getClientIp();
 
   // Rate limit: 5 attempts per 15 minutes
   const rl = getRatelimit();
@@ -52,6 +53,16 @@ export async function loginAction(formData: FormData) {
     return { error: 'Invalid email or password.' };
   }
 
-  // ✅ Authenticated — redirect to admin dashboard
+  // Credentials are valid, but a Supabase session alone doesn't mean admin
+  // access — only an approved admin_requests row (or the founder) does.
+  // Check before leaving a session cookie in the browser, so an unapproved
+  // or revoked account never bounces between /login and /admin.
+  const adminUser = await getAdminUser();
+  if (!adminUser) {
+    await supabase.auth.signOut();
+    return { error: 'Your account is pending administrator approval or does not have admin privileges.' };
+  }
+
+  // ✅ Authenticated and approved — redirect to admin dashboard
   redirect('/admin');
 }

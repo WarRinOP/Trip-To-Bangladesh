@@ -1,9 +1,9 @@
 /** @type {import('next').NextConfig} */
 const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-eval' 'unsafe-inline' blob:;
+    script-src 'self' 'unsafe-eval' 'unsafe-inline' blob: https://www.googletagmanager.com;
     style-src 'self' 'unsafe-inline';
-    img-src 'self' blob: data: https://images.unsplash.com https://cdn.sanity.io https://*.mapbox.com;
+    img-src 'self' blob: data: https://images.unsplash.com https://cdn.sanity.io https://*.mapbox.com https://www.google-analytics.com;
     font-src 'self' https://fonts.gstatic.com;
     object-src 'none';
     base-uri 'self';
@@ -19,7 +19,11 @@ const cspHeader = `
         wss://*.supabase.co
         https://api.anthropic.com
         https://*.sanity.io
-        wss://*.sanity.io;
+        wss://*.sanity.io
+        https://www.googletagmanager.com
+        https://www.google-analytics.com
+        https://*.google-analytics.com
+        https://*.analytics.google.com;
     upgrade-insecure-requests;
 `
 
