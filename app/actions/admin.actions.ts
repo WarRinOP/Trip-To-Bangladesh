@@ -131,7 +131,7 @@ export async function updateTourStatus(formData: FormData) {
 
 // ─── Logout ─────────────────────────────────────────────
 export async function logoutAdmin() {
-  const supabase = createServerClient();
+  const supabase = await createServerClient();
   await supabase.auth.signOut();
   redirect('/login');
 }

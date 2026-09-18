@@ -19,14 +19,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ContactPage({
+export default async function ContactPage({
   searchParams,
 }: {
-  searchParams: { date?: string; tour?: string };
+  searchParams: Promise<{ date?: string; tour?: string }>;
 }) {
+  const resolvedSearchParams = await searchParams;
   const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '';
-  const initialDate = searchParams.date ?? undefined;
-  const initialTour = searchParams.tour ?? undefined;
+  const initialDate = resolvedSearchParams.date ?? undefined;
+  const initialTour = resolvedSearchParams.tour ?? undefined;
 
   return (
     <div className="w-full">

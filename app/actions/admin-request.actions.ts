@@ -41,7 +41,7 @@ function getInviteRatelimit() {
 export async function submitAdminRequest(
     formData: FormData
 ): Promise<{ error?: string } | void> {
-    const ip = getClientIp();
+    const ip = await getClientIp();
     const limiter = getInviteRatelimit();
     if (limiter) {
         const { success } = await limiter.limit(`admin_request_${ip}`);

@@ -10,8 +10,8 @@ export function createBrowserClient() {
 }
 
 // SERVER ONLY - Use this in server components, API routes, and Server Actions
-export function createServerClient() {
-    const cookieStore = cookies();
+export async function createServerClient() {
+    const cookieStore = await cookies();
 
     return _createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,

@@ -55,7 +55,7 @@ export async function changeAdminPassword(
   const auth = await requireAdmin();
   if (!auth.user) return { success: false, error: auth.error ?? 'Not authorized' };
 
-  const ip = getClientIp();
+  const ip = await getClientIp();
 
   // Rate limit: 3 attempts per hour
   const rl = getRatelimit();
@@ -79,7 +79,7 @@ export async function changeAdminPassword(
     };
   }
 
-  const supabase = createServerClient();
+  const supabase = await createServerClient();
   const { user } = auth;
 
   // Verify current password by attempting sign-in

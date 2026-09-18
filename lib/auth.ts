@@ -17,7 +17,7 @@ export type AdminUser = { id: string; email: string; isFounder: boolean };
 // privileged actions — this is kept for the narrow cases that only need "is
 // there a session" (e.g. verifying the caller's own current password).
 export async function requireUser(): Promise<AuthResult> {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     const {
         data: { user },
     } = await supabase.auth.getUser();
@@ -60,7 +60,7 @@ export async function getAdminUserFromClient(
 // Convenience wrapper for Server Actions / Server Components using the
 // standard cookies()-bound client.
 export async function getAdminUser(): Promise<AdminUser | null> {
-    return getAdminUserFromClient(createServerClient());
+    return getAdminUserFromClient(await createServerClient());
 }
 
 // Real admin check: the founder, or a session with an approved admin_requests

@@ -47,7 +47,7 @@ export async function resetPassword(
     };
   }
 
-  const supabase = createServerClient();
+  const supabase = await createServerClient();
 
   // Verify session exists (set by the /auth/callback route)
   const { data: { user } } = await supabase.auth.getUser();

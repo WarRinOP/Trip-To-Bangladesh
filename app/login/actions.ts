@@ -29,7 +29,7 @@ function getRatelimit() {
 
 // ─── Login Action ─────────────────────────────────────────────
 export async function loginAction(formData: FormData) {
-  const ip = getClientIp();
+  const ip = await getClientIp();
 
   // Rate limit: 5 attempts per 15 minutes
   const rl = getRatelimit();
@@ -44,7 +44,7 @@ export async function loginAction(formData: FormData) {
   const parsed = loginSchema.safeParse({ email, password });
   if (!parsed.success) return { error: 'Invalid email or password.' };
 
-  const supabase = createServerClient();
+  const supabase = await createServerClient();
 
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 

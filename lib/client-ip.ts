@@ -5,8 +5,8 @@ import type { NextRequest } from 'next/server';
 // client cannot override it by sending its own header. x-forwarded-for can
 // be a comma-separated list a client partially controls, so it's only used
 // as a fallback (e.g. local dev, non-Vercel hosting).
-export function getClientIp(request?: NextRequest): string {
-  const h = request ? request.headers : headers();
+export async function getClientIp(request?: NextRequest): Promise<string> {
+  const h = request ? request.headers : await headers();
   return (
     h.get('x-real-ip') ??
     h.get('x-forwarded-for')?.split(',')[0]?.trim() ??

@@ -32,7 +32,7 @@ export async function submitTourInquiry(
             redis: Redis.fromEnv(),
             limiter: Ratelimit.slidingWindow(3, '1 h'),
         });
-        const ip = getClientIp();
+        const ip = await getClientIp();
         const { success } = await ratelimit.limit(`inquiry_${ip}`);
         if (!success) {
             return { success: false, error: 'Too many requests. Please try again later.' };
@@ -60,7 +60,7 @@ export async function submitTourInquiry(
     }
 
     // SERVER ONLY — uses anon key, RLS allows public INSERT on inquiries only
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     const { error } = await supabase.from('inquiries').insert({
         full_name: parsed.data.full_name,
         email: parsed.data.email,

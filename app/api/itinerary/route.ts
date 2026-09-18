@@ -140,7 +140,7 @@ export async function POST(request: NextRequest) {
   // This endpoint calls a paid, metered API, so in production it must fail
   // closed: if Upstash isn't configured, reject rather than let every
   // request through unlimited.
-  const ip = getClientIp(request);
+  const ip = await getClientIp(request);
   const ipLimiter = getIpRatelimit();
   if (ipLimiter) {
     const { success } = await ipLimiter.limit(`itinerary_${ip}`);
